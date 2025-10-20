@@ -9,6 +9,7 @@ namespace TodoApi2
 
         ResultDTO Getlogin(Login c);
         ResultDTO GetloginReport(Login c);
+        ResultDTO GetChecklogin(Login c);
         
 
 

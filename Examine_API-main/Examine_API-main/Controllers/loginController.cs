@@ -33,11 +33,20 @@ namespace TodoApi2.Controllers
             return Content(JsonConvert.SerializeObject(qry, new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd" }));
 
         }
-          [HttpPost]
+        [HttpPost]
         public ActionResult GetloginReport([FromForm] ReceiveDTO<Login> c)
         {
             Login user = new Login();
             ResultDTO result = Repository.GetloginReport(c.parameter);
+            var qry = new { TotalRecord = result.TotalRecord, rows = result.dtResult };
+            return Content(JsonConvert.SerializeObject(qry, new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd" }));
+
+        }
+           [HttpPost]
+        public ActionResult GetChecklogin([FromForm] ReceiveDTO<Login> c)
+        {
+            Login user = new Login();
+            ResultDTO result = Repository.GetChecklogin(c.parameter);
             var qry = new { TotalRecord = result.TotalRecord, rows = result.dtResult };
             return Content(JsonConvert.SerializeObject(qry, new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd" }));
 

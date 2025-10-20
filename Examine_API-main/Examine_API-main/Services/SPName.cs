@@ -120,7 +120,10 @@ namespace TodoApi2
     public readonly static string prc_gb_wh_stock_query_sch_group = "[dbo].[prc_gb_wh_stock_query_sch_group]";//庫存報表查詢
 
     public readonly static string prc_sp_query_AnnualReport = "[dbo].[prc_sp_query_AnnualReport]";//健檢資料比對表
+
     public readonly static string prc_sp_query_Payable = "[dbo].[prc_sp_query_Payable]";//應付憑單查詢
+
+    public readonly static string sp_Checklogin = "[dbo].[sp_Checklogin]";//採購權限登入
         
 
 
