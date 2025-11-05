@@ -124,6 +124,8 @@ namespace TodoApi2
     public readonly static string prc_sp_query_Payable = "[dbo].[prc_sp_query_Payable]";//應付憑單查詢
 
     public readonly static string sp_Checklogin = "[dbo].[sp_Checklogin]";//採購權限登入
+
+    public readonly static string sp_Customer_Complaint = "[dbo].[sp_Customer_Complaint]";//客訴表單查詢
         
 
 

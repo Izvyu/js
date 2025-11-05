@@ -94,6 +94,7 @@ AccessToDb.ConnectionString_CYERP = builder.Configuration.GetConnectionString("C
 AccessToDb.ConnectionString_HR = builder.Configuration.GetConnectionString("HR");
 AccessToDb.ConnectionString_gbsso = builder.Configuration.GetConnectionString("gbsso");
 AccessToDb.ConnectionString_gbcyerp = builder.Configuration.GetConnectionString("gbcyerp");
+AccessToDb.ConnectionString_GBBPM = builder.Configuration.GetConnectionString("GBBPM");
 
 var app = builder.Build();
 app.UseCors(MyAllowSpecificOrigins);

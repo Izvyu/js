@@ -30,6 +30,8 @@ import AnnualReportRecords from './AnnualReportRecords';
 import AnnualReportlogin from './AnnualReportlogin';
 import PayableRecords from './PayableRecords';
 import QueryReportlogin from './QueryReportlogin';
+import CustomercomplaintRecords from './CustomercomplaintRecords';
+
 
 
 
@@ -120,6 +122,7 @@ const Init=()=>{
             <Route path="/MedRecords" element={<MedRecords />} />
             <Route path="/SourceRecords" element={<SourceRecords />} />
             <Route path="/QuestionReportRecords" element={<QuestionReportRecords />} />
+            <Route path="/CustomercomplaintRecords" element={<CustomercomplaintRecords />} />
             {/* <Route path="/AnnualReportRecords" element={<AnnualReportRecords />} /> */}
             {/* <Route path="/ReceipttimeRecords" element={<ReceipttimeRecords />} />
             <Route path="/StockRecords" element={<StockRecords />} />
