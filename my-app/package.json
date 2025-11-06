@@ -1,8 +1,6 @@
-{    "options": {
-    "allowedHosts": ["localhost", ".localhost"],
-    "proxy": "http://medirep.mornjoy.com.tw"
-    },
-    "homepage": "https://mj.mornjoy.com.tw/purchase/",
+{
+  "homepage": "https://mj.mornjoy.com.tw/purchase/",
+  "proxy": "http://medirep.mornjoy.com.tw",
     "name": "my-app",
     "version": "0.1.0",
     "private": true,
@@ -41,7 +39,7 @@
         "react-native-aes-crypto": "^3.0.2",
         "react-redux": "^9.1.0",
         "react-router-dom": "^6.3.0",
-        "react-scripts": "^4.0.3",
+        "react-scripts": "^5.0.1",
         "react-use-callback": "^0.0.3",
         "reducers": "^3.0.0-alpha",
         "redux": "^5.0.1",
