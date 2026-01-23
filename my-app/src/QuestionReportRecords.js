@@ -111,7 +111,12 @@ const QuestionReportRecords  = props => {
         { field: '工作一整天之後，你覺得精疲力竭嗎?', headerName: "工作一整天之後，你覺得精疲力竭嗎?", width: 220, tooltipField: '工作一整天之後，你覺得精疲力竭嗎?', cellStyle: { textAlign: 'left' } },
         { field: '上班之前只要想到又要工作一整天，你就覺得沒力嗎?', headerName: "上班之前只要想到又要工作一整天，你就覺得沒力嗎?", width: 220, tooltipField: '上班之前只要想到又要工作一整天，你就覺得沒力嗎?' , cellStyle: { textAlign: 'left' }},
         { field: '上班時你會覺得每一刻都很難熬嗎?', headerName: "上班時你會覺得每一刻都很難熬嗎?", width: 220, tooltipField: '上班時你會覺得每一刻都很難熬嗎?', cellStyle: { textAlign: 'left' } },
-        { field: '不工作的時候，你有足夠的精力陪朋友或家人嗎?', headerName: "不工作的時候，你有足夠的精力陪朋友或家人嗎?", width: 220, tooltipField: '不工作的時候，你有足夠的精力陪朋友或家人嗎?', cellStyle: { textAlign: 'left' } },
+        { field: '計分方式2問題', headerName: "計分方式2問題", width: 160, tooltipField: '計分方式2問題', cellStyle: { textAlign: 'left' } },
+        // { field: '計分方式2選項', headerName: "計分方式2選項", width: 160, tooltipField: '計分方式2選項', cellStyle: { textAlign: 'left' } },
+        { field: '計分方式2', headerName: "計分方式2", width: 160, tooltipField: '計分方式2', cellStyle: { textAlign: 'left' } },
+        { field: '計分方式3問題', headerName: "計分方式3問題", width: 160, tooltipField: '計分方式3問題', cellStyle: { textAlign: 'left' } },
+        // { field: '計分方式3選項', headerName: "計分方式3選項", width: 160, tooltipField: '計分方式3選項', cellStyle: { textAlign: 'left' } },
+        { field: '計分方式3', headerName: "計分方式3", width: 160, tooltipField: '計分方式3', cellStyle: { textAlign: 'left' } },
         // {  field: '單價', headerName: "單價", width: 200, tooltipField: '單價', 
         // valueFormatter: (params) => {
         //     return params.value ? parseFloat(params.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';},},
@@ -127,24 +132,24 @@ const QuestionReportRecords  = props => {
         { field: '條碼號', headerName: "條碼號", width: 150, tooltipField: '條碼號' },
         { field: '姓名', headerName: "姓名", width: 150, tooltipField: '姓名' },
         { field: '說明：本量表所列舉的問題是為協助您瞭解您的心情狀況，請您仔細回想在一星期中，這些問題發生幾天，然後圈選一個您認為最能代表您感覺的答案。『沒有或極少』1天以下/週，『有時候』1~2天/週，『時常』3~4天/週，『常常或總是』5~7天/週', headerName: "說明：本量表所列舉的問題是為協助您瞭解您的心情狀況，請您仔細回想在一星期中，這些問題發生幾天，然後圈選一個您認為最能代表您感覺的答案。『沒有或極少』1天以下/週，『有時候』1~2天/週，『時常』3~4天/週，『常常或總是』5~7天/週", width: 120, tooltipField: '說明：本量表所列舉的問題是為協助您瞭解您的心情狀況，請您仔細回想在一星期中，這些問題發生幾天，然後圈選一個您認為最能代表您感覺的答案。『沒有或極少』1天以下/週，『有時候』1~2天/週，『時常』3~4天/週，『常常或總是』5~7天/週' },
-        { field: '我常常覺得想哭', headerName: "我常常覺得想哭", width: 100, tooltipField: '我常常覺得想哭' },
-        { field: '我覺得心情不好', headerName: "我覺得心情不好", width: 100, tooltipField: '我覺得心情不好' },
-        { field: '我覺得比以前容易發脾氣', headerName: "我覺得比以前容易發脾氣", width: 100, tooltipField: '我覺得比以前容易發脾氣' },
-        { field: '我睡不好', headerName: "我睡不好", width: 100, tooltipField: '我睡不好' },
-        { field: '我覺得不想吃東西', headerName: "我覺得不想吃東西", width: 100, tooltipField: '我覺得不想吃東西' },
-        { field: '我覺得胸口悶悶的', headerName: "我覺得胸口悶悶的", width: 100, tooltipField: '我覺得胸口悶悶的' },
-        { field: '我覺得不輕鬆、不舒服', headerName: "我覺得不輕鬆、不舒服", width: 100, tooltipField: '我覺得不輕鬆、不舒服' },
-        { field: '我覺得身體疲勞虛弱無力', headerName: "我覺得身體疲勞虛弱無力", width: 100, tooltipField: '我覺得身體疲勞虛弱無力' },
-        { field: '我覺得很煩', headerName: "我覺得很煩", width: 100, tooltipField: '我覺得很煩' },
-        { field: '我覺得記憶力不好', headerName: "我覺得記憶力不好", width: 100, tooltipField: '我覺得記憶力不好' },
-        { field: '我覺得做事時無法專心', headerName: "我覺得做事時無法專心", width: 100, tooltipField: '我覺得做事時無法專心' },
-        { field: '我覺得想事情或做事時比平常要緩慢', headerName: "我覺得想事情或做事時比平常要緩慢", width: 100, tooltipField: '我覺得想事情或做事時比平常要緩慢' },
-        { field: '我覺得比以前沒信心', headerName: "我覺得比以前沒信心", width: 100, tooltipField: '我覺得比以前沒信心' },
-        { field: '我覺得比較會往壞處想', headerName: "我覺得比較會往壞處想", width: 100, tooltipField: '我覺得比較會往壞處想' },
-        { field: '我覺得想不開，甚至想死', headerName: "我覺得想不開，甚至想死", width: 100, tooltipField: '我覺得想不開，甚至想死' },
-        { field: '我覺得對什麼事都失去興趣', headerName: "我覺得對什麼事都失去興趣", width: 100, tooltipField: '我覺得對什麼事都失去興趣' },
-        { field: '我覺得身體不舒服', headerName: "我覺得身體不舒服", width: 100, tooltipField: '我覺得身體不舒服' },
-        { field: '我覺得自己很沒用', headerName: "我覺得自己很沒用", width: 100, tooltipField: '我覺得自己很沒用' },
+        { field: '我常常覺得想哭', headerName: "我常常覺得想哭", width: 150, tooltipField: '我常常覺得想哭' },
+        { field: '我覺得心情不好', headerName: "我覺得心情不好", width: 150, tooltipField: '我覺得心情不好' },
+        { field: '我覺得比以前容易發脾氣', headerName: "我覺得比以前容易發脾氣", width: 150, tooltipField: '我覺得比以前容易發脾氣' },
+        { field: '我睡不好', headerName: "我睡不好", width: 130, tooltipField: '我睡不好' },
+        { field: '我覺得不想吃東西', headerName: "我覺得不想吃東西", width: 150, tooltipField: '我覺得不想吃東西' },
+        { field: '我覺得胸口悶悶的', headerName: "我覺得胸口悶悶的", width: 150, tooltipField: '我覺得胸口悶悶的' },
+        { field: '我覺得不輕鬆、不舒服', headerName: "我覺得不輕鬆、不舒服", width: 150, tooltipField: '我覺得不輕鬆、不舒服' },
+        { field: '我覺得身體疲勞虛弱無力', headerName: "我覺得身體疲勞虛弱無力", width: 150, tooltipField: '我覺得身體疲勞虛弱無力' },
+        { field: '我覺得很煩', headerName: "我覺得很煩", width: 130, tooltipField: '我覺得很煩' },
+        { field: '我覺得記憶力不好', headerName: "我覺得記憶力不好", width: 150, tooltipField: '我覺得記憶力不好' },
+        { field: '我覺得做事時無法專心', headerName: "我覺得做事時無法專心", width: 150, tooltipField: '我覺得做事時無法專心' },
+        { field: '我覺得想事情或做事時比平常要緩慢', headerName: "我覺得想事情或做事時比平常要緩慢", width: 150, tooltipField: '我覺得想事情或做事時比平常要緩慢' },
+        { field: '我覺得比以前沒信心', headerName: "我覺得比以前沒信心", width: 150, tooltipField: '我覺得比以前沒信心' },
+        { field: '我覺得比較會往壞處想', headerName: "我覺得比較會往壞處想", width: 150, tooltipField: '我覺得比較會往壞處想' },
+        { field: '我覺得想不開，甚至想死', headerName: "我覺得想不開，甚至想死", width: 150, tooltipField: '我覺得想不開，甚至想死' },
+        { field: '我覺得對什麼事都失去興趣', headerName: "我覺得對什麼事都失去興趣", width: 150, tooltipField: '我覺得對什麼事都失去興趣' },
+        { field: '我覺得身體不舒服', headerName: "我覺得身體不舒服", width: 150, tooltipField: '我覺得身體不舒服' },
+        { field: '我覺得自己很沒用', headerName: "我覺得自己很沒用", width: 150, tooltipField: '我覺得自己很沒用' },
     ])
 
     const [muscleColumns] = React.useState([
@@ -161,43 +166,53 @@ const QuestionReportRecords  = props => {
         { field: '下背部', headerName: "下背部", width: 100, tooltipField: '下背部' },
         { field: '左肩部', headerName: "左肩部", width: 100, tooltipField: '左肩部' },
         { field: '右肩部', headerName: "右肩部", width: 100, tooltipField: '右肩部' },
-        { field: '左手肘/左前臂', headerName: "左手肘/左前臂", width: 100, tooltipField: '左手肘/左前臂' },
-        { field: '右手肘/右前臂', headerName: "右手肘/右前臂", width: 100, tooltipField: '右手肘/右前臂' },
-        { field: '左手/左手腕', headerName: "左手/左手腕", width: 100, tooltipField: '左手/左手腕' },
-        { field: '右手/右手腕', headerName: "右手/右手腕", width: 100, tooltipField: '右手/右手腕' },
-        { field: '左臀/左大腿', headerName: "左臀/左大腿", width: 100, tooltipField: '左臀/左大腿' },
-        { field: '右臀/右大腿', headerName: "右臀/右大腿", width: 100, tooltipField: '右臀/右大腿' },
+        { field: '左手肘/左前臂', headerName: "左手肘/左前臂", width: 130, tooltipField: '左手肘/左前臂' },
+        { field: '右手肘/右前臂', headerName: "右手肘/右前臂", width: 130, tooltipField: '右手肘/右前臂' },
+        { field: '左手/左手腕', headerName: "左手/左手腕", width: 130, tooltipField: '左手/左手腕' },
+        { field: '右手/右手腕', headerName: "右手/右手腕", width: 130, tooltipField: '右手/右手腕' },
+        { field: '左臀/左大腿', headerName: "左臀/左大腿", width: 130, tooltipField: '左臀/左大腿' },
+        { field: '右臀/右大腿', headerName: "右臀/右大腿", width: 130, tooltipField: '右臀/右大腿' },
         { field: '左膝', headerName: "左膝", width: 100, tooltipField: '左膝' },
         { field: '右膝', headerName: "右膝", width: 100, tooltipField: '右膝' },
-        { field: '左腳踝/左腳', headerName: "左腳踝/左腳", width: 100, tooltipField: '左腳踝/左腳' },
-        { field: '右腳踝/右腳', headerName: "右腳踝/右腳", width: 100, tooltipField: '右腳踝/右腳' },
-        { field: '其他症狀、病史說明', headerName: "其他症狀、病史說明", width: 100, tooltipField: '其他症狀、病史說明' },
+        { field: '左腳踝/左腳', headerName: "左腳踝/左腳", width: 130, tooltipField: '左腳踝/左腳' },
+        { field: '右腳踝/右腳', headerName: "右腳踝/右腳", width: 130, tooltipField: '右腳踝/右腳' },
+        { field: '其他症狀、病史說明', headerName: "其他症狀、病史說明", width: 130, tooltipField: '其他症狀、病史說明' },
     ])
     const columnMap = useMemo(() => ({
         '67': fatigueColumns,
         '68': moodColumns,
         '69': muscleColumns,
       }), [fatigueColumns, moodColumns, muscleColumns]);
-      
+
       useEffect(() => {
-        if (rowData && rowData.length > 0) {
-          const keys = Object.keys(rowData[0]);
-      
-          let questionNo = '';
-          if (keys.includes('你常覺得疲勞嗎?')) {
-            questionNo = '67';
-          } else if (keys.includes('我常常覺得想哭')) {
-            questionNo = '68';
-          } else if (keys.includes('您平常使用電腦、滑鼠慣用手為？')) {
-            questionNo = '69';
-          }
-      
-          console.log('Guessed QuestionNo:', questionNo);
-      
-          const newColumnDefs = columnMap[questionNo] || [];
-          setColumnDefs(newColumnDefs);
+        if (QuestionNo) {
+            setColumnDefs(columnMap[QuestionNo] || []);
+            setRowData([]);   // 👈 清空舊資料（重要 UX）
+        } else {
+            setColumnDefs([]);
         }
-      }, [rowData, columnMap]);
+    }, [QuestionNo, columnMap]);
+      
+    //   useEffect(() => {
+    //     if (rowData && rowData.length > 0) {
+    //       const keys = Object.keys(rowData[0]);
+      
+    //       let questionNo = '';
+    //       if (keys.includes('你常覺得疲勞嗎?')) {
+    //         questionNo = '67';
+    //       } else if (keys.includes('我常常覺得想哭')) {
+    //         questionNo = '68';
+    //       } else if (keys.includes('您平常使用電腦、滑鼠慣用手為？')) {
+    //         questionNo = '69';
+    //       }
+      
+    //       console.log('Guessed QuestionNo:', questionNo);
+      
+    //       const newColumnDefs = columnMap[questionNo] || [];
+    //       setColumnDefs(newColumnDefs);
+    //     }
+    //   }, [rowData, columnMap]);
+
     // useEffect(() => {
     //     if (rowData && rowData.length > 0) {
     //       const questionNo = rowData[0].QuestionNo; // 確保根據條件設定欄位
@@ -296,6 +311,14 @@ const QuestionReportRecords  = props => {
     
         if (settingObj.ProjectNo.value === "" || settingObj.ProjectNo.value === null) {
             enqueueSnackbar('請選擇專案', { variant: 'error', style: { whiteSpace: 'pre-line' }, autoHideDuration: 3000 });
+            return;
+        }
+        
+        if (!QuestionNo) {
+            enqueueSnackbar('請選擇 QuestionNo（67 / 68 / 69）', {
+                variant: 'error',
+                autoHideDuration: 3000,
+            });
             return;
         }
     
@@ -431,25 +454,29 @@ const QuestionReportRecords  = props => {
                         />
                     </FormControl>
                     
-                    <TextField
+                   <TextField
+                        select
+                        size="small" 
                         label="QuestionNo"
-                        variant="outlined"
                         value={QuestionNo}
                         onChange={(e) => setQuestionNo(e.target.value)}
-                        style={{ marginRight: '10px', width: '90px', marginTop: '5px' }} // Adjusted top margin
-                        InputProps={{
-                            style: {
-                                height: '40px', // Adjusted height
-                            },
-                        }}
-                    />
+                        style={{ width: '100px', marginTop: '5px', marginRight: '10px' }}
+                        SelectProps={{ native: true }}
+                        error={!QuestionNo}
+                        // helperText={!QuestionNo ? '請選擇 QuestionNo' : ''}
+                    >
+                        <option value=""></option>
+                        <option value="67">67</option>
+                        <option value="68">68</option>
+                        <option value="69">69</option>
+                    </TextField>
              {/* <Input placeholder="Value" value={Value} onChange={(e) => setValue(e.target.value)} style={{ width: '400px',height: '45px', marginRight: '5px',marginTop: '3px' }} />            */}
              <Button onClick={handleQuery} variant="contained" style={{ marginLeft: '5px' }}>查詢</Button>
            
-             <Grid container spacing={0}>
-                <Grid item xs={12}>
-                    <div style={containerStyle}>
-                        <div className="ag-theme-alpine" style={{ height: 670, width: 1515 }}>
+                   <Grid container spacing={0}>
+                    <Grid item xs={12} md={6} >
+                     <div style={containerStyle}>
+                        <div  className="ag-theme-alpine" style={{ height: '94vh', width: '100vw' }}>
                             <AgGridReact
                             ref={gridRef}
                             rowData={rowData} // 根據條件設置 rowData
