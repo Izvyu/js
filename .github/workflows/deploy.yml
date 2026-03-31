@@ -54,7 +54,7 @@ jobs:
         shell: powershell
         run: |
           $destination = "D:\wwwroot\purchase"
-          $source = ".\build"
+          $source = ".\my-app\build"
 
           # 確保目標資料夾存在
           if (-not (Test-Path $destination)) {
