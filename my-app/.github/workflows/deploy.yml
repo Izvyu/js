@@ -1,0 +1,87 @@
+name: Deploy to IIS (Windows Server)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted, Izvyu-js]
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build React app
+        run: npm run build
+        env:
+          CI: false
+
+      - name: Stop IIS App Pool
+        shell: powershell
+        run: |
+          Import-Module WebAdministration
+          $poolName = "Izvyu-js"
+          $pool = Get-WebConfiguration "system.applicationHost/applicationPools/add[@name='$poolName']"
+          if ($pool -ne $null) {
+            $state = (Get-WebAppPoolState -Name $poolName).Value
+            if ($state -ne "Stopped") {
+              Stop-WebAppPool -Name $poolName
+              Write-Host "Waiting for App Pool to stop..."
+              $timeout = 30
+              $elapsed = 0
+              while ((Get-WebAppPoolState -Name $poolName).Value -ne "Stopped" -and $elapsed -lt $timeout) {
+                Start-Sleep -Seconds 1
+                $elapsed++
+              }
+              Write-Host "App Pool stopped."
+            } else {
+              Write-Host "App Pool already stopped."
+            }
+          }
+
+      - name: Deploy build files to IIS root
+        shell: powershell
+        run: |
+          $destination = "D:\wwwroot\purchase"
+          $source = ".\build"
+
+          # 確保目標資料夾存在
+          if (-not (Test-Path $destination)) {
+            New-Item -ItemType Directory -Path $destination -Force
+          }
+
+          # 清除舊檔案（保留 web.config 以防萬一）
+          Get-ChildItem -Path $destination -Exclude "web.config" | Remove-Item -Recurse -Force
+
+          # 複製新 build 檔案
+          Copy-Item -Path "$source\*" -Destination $destination -Recurse -Force
+          Write-Host "Files deployed to $destination"
+
+      - name: Start IIS App Pool
+        shell: powershell
+        run: |
+          $poolName = "Izvyu-js"
+          Start-WebAppPool -Name $poolName
+          Write-Host "App Pool '$poolName' started."
+
+      - name: Verify deployment
+        shell: powershell
+        run: |
+          $destination = "D:\wwwroot\purchase"
+          if (Test-Path "$destination\index.html") {
+            Write-Host "Deployment verified: index.html exists."
+          } else {
+            Write-Error "Deployment failed: index.html not found!"
+            exit 1
+          }
