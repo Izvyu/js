@@ -1,5 +1,5 @@
 import React, { useEffect,useMemo,useRef,useState,StrictMode, } from 'react';
-import { Grid, Checkbox, FormGroup, FormControlLabel, Chip, Paper, FormControl, FormLabel, TextField, Button, IconButton, MenuItem, Stack } from '@mui/material';
+import { Grid, Checkbox, FormGroup, FormControlLabel, Chip, Paper, FormControl, FormLabel, TextField, Button, IconButton, MenuItem, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise';
 
@@ -81,6 +81,7 @@ const StoamchRecords = props => {
     
     
     const [open, setOpen] = React.useState(false);
+    const [openLogoutConfirm, setOpenLogoutConfirm] = React.useState(false);
    
     const { enqueueSnackbar } = useSnackbar();
     const statusBar = React.useMemo(() => {
@@ -119,11 +120,11 @@ const StoamchRecords = props => {
     const [columnDefs] = React.useState([
         // { headerName: '', valueGetter: 'node.rowIndex + 1', width: 60, pinned: 'left', tooltipField: 'No' },
         { field: 'id', headerName: "身份證號", width: 150, tooltipField: 'id'},//,valueFormatter: (params) => maskId(params.value)}, // 使用 valueFormatter 設置處理方式 
-        { field: 'Name', headerName: "姓名", width: 150, tooltipField: 'Name' },
+        { field: 'Name', headerName: "姓名", width: 180, tooltipField: 'Name' },
         { field: 'SpecialCheckDate', headerName: "體檢日", width: 150, tooltipField: 'SpecialCheckDate' },
         { field: 'Itemno', headerName: "項目", width: 150, tooltipField: 'Itemno' },
         { field: 'Err', headerName: "異常值", width: 150, tooltipField: 'Err' , valueFormatter: params => params.value === true ? 1 : 0}, // 格式化函数，根据字段值返回相应的显示值},
-        { field: 'Value', headerName: "狀況", width: 700, tooltipField: 'Value'},
+        { field: 'Value', headerName: "狀況", width: 780, tooltipField: 'Value'},
         // { field: 'sogi', headerName: "電話", width: 150, tooltipField: 'sogi' },
         // { field: 'sex', headerName: "性別", width: 150, tooltipField: 'sex' },
         // { field: 'OrderDate', headerName: "預約日", width: 150, tooltipField: 'OrderDate' },
@@ -288,15 +289,19 @@ const StoamchRecords = props => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const handleLogout = () => {
+    
+    const handleLogoutClick = () => {
+        setOpenLogoutConfirm(true);
+    };
+    
+    const confirmLogout = () => {
+        setOpenLogoutConfirm(false);
         navigate(`/Login`, { replace: true });
         dispatch(actions.UserInfo({}));
         dispatch(actions.TOKEN_SET(""));
         localStorage.removeItem("UserInfo");
         localStorage.removeItem("token");
-        // return redirect("/MinmaxLogin");
-        // return <Navigate to="/MinmaxLogin" replace={true} />
-    }
+    };
 
     
 
@@ -363,14 +368,14 @@ const StoamchRecords = props => {
             <Button onClick={handleQuery} variant="contained">查詢</Button>
         </Grid>
         <Grid item sx={{ marginLeft: '200px' }}>
-            <Button onClick={handleLogout} variant="contained" startIcon={<ExitToAppIcon />}>登出</Button>
+            <Button onClick={handleLogoutClick} variant="contained" startIcon={<ExitToAppIcon />}>登出</Button>
         </Grid>
     </Grid>
            
-            <Grid container spacing={0}>
+            <Grid container spacing={0} sx={{ pl: 2 }}>
                 <Grid item xs={12} md={6} textAlign="right">
                 <div style={containerStyle}>
-                    <div  className="ag-theme-alpine" style={{ height: 670, width: 1515 }}>
+                    <div  className="ag-theme-alpine" style={{ height: '93vh', width: '98vw' }}>
                         <AgGridReact
                             ref={gridRef}
                             rowData={todayList}
@@ -423,6 +428,17 @@ const StoamchRecords = props => {
             onClick={handleQuery}>
             <CircularProgress color="inherit" />
             </Backdrop>
+            
+            <Dialog open={openLogoutConfirm} onClose={() => setOpenLogoutConfirm(false)}>
+                <DialogTitle>確認登出</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>確定要登出嗎？</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenLogoutConfirm(false)}>取消</Button>
+                    <Button onClick={confirmLogout} variant="contained" color="error">確認登出</Button>
+                </DialogActions>
+            </Dialog>
         </>
 
     )

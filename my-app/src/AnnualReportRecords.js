@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Input, Box, Paper, Typography } from '@mui/material';
+import { Button, Input, Box, Paper, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -12,9 +12,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { actions } from "./reducers/app";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const AnnualReportRecords = () => {
   const [open, setOpen] = React.useState(false);
+  const [openLogoutConfirm, setOpenLogoutConfirm] = React.useState(false);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -128,7 +130,13 @@ const AnnualReportRecords = () => {
 
   const handleInputChange = (e) => setID(e.target.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 10));
   const handleKeyPress = (event) => { if (event.key === 'Enter') handleQuery(); };
-  const handleLogout = () => {
+  
+  const handleLogoutClick = () => {
+    setOpenLogoutConfirm(true);
+  };
+  
+  const confirmLogout = () => {
+    setOpenLogoutConfirm(false);
     navigate(`/AnnualReportlogin`, { replace: true });
     dispatch(actions.UserInfo({}));
     dispatch(actions.TOKEN_SET(""));
@@ -137,38 +145,120 @@ const AnnualReportRecords = () => {
   };
 
   return (
-    <Box sx={{ p: 0.5, backgroundColor: '#f5f5f5', minHeight: '100vh', position: 'relative' }}>
-      <Box sx={{ position: 'absolute', top: 10, right: 10 }}>
-        <Button variant="outlined" color="error" onClick={handleLogout}>登出</Button>
+    <Box sx={{ p: 2, backgroundColor: '#e8eef5', minHeight: '100vh', position: 'relative' }}>
+      <Box sx={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}>
+        <Button 
+          variant="contained" 
+          color="error" 
+          onClick={handleLogoutClick}
+          startIcon={<LogoutIcon />}
+          sx={{ 
+            fontWeight: 700, 
+            textTransform: 'none', 
+            fontSize: '15px', 
+            px: 3,
+            py: 1.2,
+            borderRadius: 2,
+            boxShadow: '0 4px 12px rgba(211, 47, 47, 0.3)',
+            transition: 'all 0.3s ease',
+            '&:hover': { 
+              boxShadow: '0 6px 20px rgba(211, 47, 47, 0.5)',
+              transform: 'translateY(-2px)',
+              backgroundColor: '#d32f2f'
+            }
+          }}
+        >
+          登出
+        </Button>
       </Box>
 
-      <Paper sx={{ p: 0.5, mb: 1 }} elevation={3}>
-        <Typography variant="h6" gutterBottom>年度檢查紀錄查詢</Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+      <Paper 
+        sx={{ 
+          p: 2.5, 
+          mb: 2, 
+          backgroundColor: '#fff',
+          borderLeft: '4px solid #1976d2'
+        }} 
+        elevation={4}
+      >
+        <Typography 
+          variant="h5" 
+          gutterBottom
+          sx={{ fontWeight: 700, color: '#1565c0', mb: 2 }}
+        >
+          年度檢查紀錄查詢
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
           <Input
-            placeholder="輸入 ID"
+            placeholder="輸入身分證號 (10碼)"
             value={ID}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
-            sx={{ backgroundColor: '#fff', borderRadius: 1, px: 1, height: 28, lineHeight: 1.0 }}
+            sx={{ 
+              backgroundColor: '#f5f5f5', 
+              borderRadius: 1.5, 
+              px: 1.5, 
+              height: 40, 
+              lineHeight: 1.0,
+              flex: '0 0 200px',
+              fontSize: '14px',
+              '&:hover': { backgroundColor: '#e8e8e8' },
+              '&:focus': { backgroundColor: '#fff' }
+            }}
           />
-          <Button onClick={handleQuery} variant="contained" color="primary" sx={{ fontWeight: 'bold' }}>查詢</Button>
+          <Button 
+            onClick={handleQuery} 
+            variant="contained" 
+            color="primary" 
+            sx={{ 
+              fontWeight: 700,
+              textTransform: 'none',
+              fontSize: '16px',
+              px: 3,
+              height: 40,
+              borderRadius: 1.5,
+              '&:hover': { boxShadow: 3 }
+            }}
+          >
+            查詢
+          </Button>
         </Box>
       </Paper>
 
       {(customerInfo.Name || customerInfo.id) && (
-        <Paper sx={{ p: 1, mb: 1, backgroundColor: '#f0f0f0' }} elevation={2}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-            姓名：{customerInfo.Name} &nbsp;&nbsp;&nbsp;
-            身分證號：{customerInfo.id} &nbsp;&nbsp;&nbsp;
-            生日：{customerInfo.Birthday} &nbsp;&nbsp;&nbsp;
-            年齡：{customerInfo.Age}
-          </Typography>
+        <Paper 
+          sx={{ 
+            p: 2, 
+            mb: 2, 
+            backgroundColor: '#e3f2fd',
+            borderRadius: 2,
+            border: '1px solid #90caf9'
+          }} 
+          elevation={2}
+        >
+          <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
+            <Box>
+              <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>姓名</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 600, color: '#1565c0' }}>{customerInfo.Name}</Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>身分證號</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 600, color: '#1565c0' }}>{customerInfo.id}</Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>生日</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 600, color: '#1565c0' }}>{customerInfo.Birthday}</Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: '#666', fontSize: '12px' }}>年齡</Typography>
+              <Typography variant="body1" sx={{ fontWeight: 600, color: '#1565c0' }}>{customerInfo.Age}</Typography>
+            </Box>
+          </Box>
         </Paper>
       )}
 
-      <Paper sx={{ height: '85vh', p: 1 }} elevation={3}>
-        <div className="ag-theme-alpine" style={{ height: '100%', width: '100%' }}>
+      <Paper sx={{ height: '82vh', p: 2, backgroundColor: '#fff' }} elevation={4}>
+        <div className="ag-theme-alpine" style={{ height: '98%', width: '98%' }}>
           <AgGridReact
             ref={gridRef}
             rowData={rowData}
@@ -185,6 +275,32 @@ const AnnualReportRecords = () => {
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
         <CircularProgress color="inherit" />
       </Backdrop>
+
+      <Dialog open={openLogoutConfirm} onClose={() => setOpenLogoutConfirm(false)}>
+        <DialogTitle sx={{ fontWeight: 700, color: '#d32f2f', fontSize: '18px' }}>確認登出</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ color: '#333', fontSize: '15px', mt: 1 }}>
+            確定要登出嗎？
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button 
+            onClick={() => setOpenLogoutConfirm(false)}
+            variant="outlined"
+            sx={{ textTransform: 'none', fontSize: '14px' }}
+          >
+            取消
+          </Button>
+          <Button 
+            onClick={confirmLogout} 
+            variant="contained" 
+            color="error"
+            sx={{ textTransform: 'none', fontSize: '14px', fontWeight: 600 }}
+          >
+            確認登出
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
