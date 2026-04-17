@@ -50,10 +50,11 @@ export default function MainWithTabs() {
   const [activeTab, setActiveTab] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const [draggedTab, setDraggedTab] = useState(null);    // ✅ 新增
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
-  const dispatch = useDispatch();                       // ✅ 新增
+  const dispatch = useDispatch();
 
   const drawerWidth = 220;
   const tabHeight = 48;
@@ -72,6 +73,38 @@ export default function MainWithTabs() {
     if (key === activeTab && newTabs.length > 0) {
       setActiveTab(newTabs[newTabs.length - 1]);
     }
+  };
+
+  // ✅ 拖拽排序 Handler - HTML5 原生 API
+  const handleDragStart = (e, key) => {
+    setDraggedTab(key);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e, targetKey) => {
+    e.preventDefault();
+    if (!draggedTab || draggedTab === targetKey) {
+      setDraggedTab(null);
+      return;
+    }
+
+    const draggedIndex = tabs.indexOf(draggedTab);
+    const targetIndex = tabs.indexOf(targetKey);
+
+    const newTabs = Array.from(tabs);
+    newTabs.splice(draggedIndex, 1);
+    newTabs.splice(targetIndex, 0, draggedTab);
+    setTabs(newTabs);
+    setDraggedTab(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedTab(null);
   };
 
   // ✅ 登出動作（含 Redux 重設）
@@ -103,12 +136,14 @@ export default function MainWithTabs() {
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
             boxSizing: "border-box",
-            background: "linear-gradient(135deg, #61c2eb, #8ebdeb)",
+            background: "linear-gradient(180deg, #1e3a5f 0%, #2c5aa0 100%)",
             color: "#fff",
+            boxShadow: "2px 0 8px rgba(0,0,0,0.15)",
+            borderRight: "1px solid rgba(255,255,255,0.1)",
           },
         }}
       >
-        <Toolbar sx={{ justifyContent: "flex-end" }}>
+        <Toolbar sx={{ justifyContent: "flex-end", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
           {!isSmallScreen && (
             <IconButton onClick={() => setDrawerOpen(false)} sx={{ color: "#fff" }}>
               <ChevronLeftIcon />
@@ -119,34 +154,106 @@ export default function MainWithTabs() {
         <List>
           <ListItemText
             primary="採購報表"
-            sx={{ px: 2, pt: 1, fontWeight: "bold", color: "#000" }}
+            sx={{ px: 2, pt: 2, pb: 1, fontWeight: "bold", color: "rgba(255,255,255,0.7)", fontSize: "12px", letterSpacing: "0.5px" }}
           />
-          <ListItemButton onClick={() => handleOpenTab("PurchaseRecords")}>
+          <ListItemButton 
+            onClick={() => handleOpenTab("PurchaseRecords")}
+            sx={{
+              borderRadius: "8px",
+              mx: 1,
+              my: 0.5,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingLeft: "24px",
+              },
+            }}
+          >
             <ListItemText primary="請購未轉採購報表" />
           </ListItemButton>
-          <ListItemButton onClick={() => handleOpenTab("ReceipttimeRecords")}>
+          <ListItemButton 
+            onClick={() => handleOpenTab("ReceipttimeRecords")}
+            sx={{
+              borderRadius: "8px",
+              mx: 1,
+              my: 0.5,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingLeft: "24px",
+              },
+            }}
+          >
             <ListItemText primary="收貨時間報表" />
           </ListItemButton>
 
           <ListItemText
             primary="庫存報表"
-            sx={{ px: 2, pt: 2, fontWeight: "bold", color: "#000" }}
+            sx={{ px: 2, pt: 2, pb: 1, fontWeight: "bold", color: "rgba(255,255,255,0.7)", fontSize: "12px", letterSpacing: "0.5px" }}
           />
-          <ListItemButton onClick={() => handleOpenTab("StockRecords")}>
+          <ListItemButton 
+            onClick={() => handleOpenTab("StockRecords")}
+            sx={{
+              borderRadius: "8px",
+              mx: 1,
+              my: 0.5,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingLeft: "24px",
+              },
+            }}
+          >
             <ListItemText primary="庫存查詢報表" />
           </ListItemButton>
-          <ListItemButton onClick={() => handleOpenTab("GeneralStockRecords")}>
+          <ListItemButton 
+            onClick={() => handleOpenTab("GeneralStockRecords")}
+            sx={{
+              borderRadius: "8px",
+              mx: 1,
+              my: 0.5,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingLeft: "24px",
+              },
+            }}
+          >
             <ListItemText primary="總務庫存查詢報表" />
           </ListItemButton>
-          <ListItemButton onClick={() => handleOpenTab("PickinglistRecords")}>
+          <ListItemButton 
+            onClick={() => handleOpenTab("PickinglistRecords")}
+            sx={{
+              borderRadius: "8px",
+              mx: 1,
+              my: 0.5,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingLeft: "24px",
+              },
+            }}
+          >
             <ListItemText primary="領料查詢報表" />
           </ListItemButton>
 
           <ListItemText
             primary="應付報表"
-            sx={{ px: 2, pt: 2, fontWeight: "bold", color: "#000" }}
+            sx={{ px: 2, pt: 2, pb: 1, fontWeight: "bold", color: "rgba(255,255,255,0.7)", fontSize: "12px", letterSpacing: "0.5px" }}
           />
-          <ListItemButton onClick={() => handleOpenTab("PayableRecords")}>
+          <ListItemButton 
+            onClick={() => handleOpenTab("PayableRecords")}
+            sx={{
+              borderRadius: "8px",
+              mx: 1,
+              my: 0.5,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingLeft: "24px",
+              },
+            }}
+          >
             <ListItemText primary="應付憑單查詢報表" />
           </ListItemButton>
         </List>
@@ -178,6 +285,9 @@ export default function MainWithTabs() {
                 ? `calc(100% - ${drawerWidth}px)`
                 : "100%",
             transition: "all 0.3s",
+            background: "linear-gradient(90deg, #0f2744 0%, #1e5a96 100%)",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
           }}
         >
           <Toolbar
@@ -209,17 +319,37 @@ export default function MainWithTabs() {
                 scrollButtons="auto"
                 textColor="inherit"
                 indicatorColor="secondary"
-                sx={{ minHeight: "48px" }}
+                sx={{ minHeight: "48px", flex: 1 }}
               >
                 {tabs.map((key) => (
                   <Tab
                     key={key}
                     value={key}
+                    draggable                           // ✅ 可拖拽
+                    onDragStart={(e) => handleDragStart(e, key)}
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, key)}
+                    onDragEnd={handleDragEnd}
                     sx={{
                       color: "#fff",
-                      "&.Mui-selected": { color: "#fff" },
+                      "&.Mui-selected": { 
+                        color: "#fff",
+                        textShadow: "0 0 10px rgba(255,255,255,0.3)",
+                        borderBottom: "2px solid #fff",
+                      },
                       textTransform: "none",
                       fontSize: "13px",
+                      fontWeight: "500",
+                      opacity: draggedTab === key ? 0.5 : 1,
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      cursor: "grab",
+                      "&:active": { cursor: "grabbing" },
+                      "&:hover": {
+                        backgroundColor: "rgba(255,255,255,0.1)",
+                        borderRadius: "8px 8px 0 0",
+                      },
+                      borderRadius: "8px 8px 0 0",
+                      padding: "4px 12px",
                     }}
                     label={
                       <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -251,8 +381,14 @@ export default function MainWithTabs() {
                 ml: 2,
                 textTransform: "none",
                 fontWeight: "bold",
+                fontSize: "14px",
+                padding: "6px 16px",
+                borderRadius: "6px",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                 "&:hover": {
-                  backgroundColor: "rgba(255,255,255,0.15)",
+                  backgroundColor: "rgba(255,59,48,0.15)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 4px 12px rgba(255,59,48,0.25)",
                 },
               }}
             >
@@ -268,7 +404,8 @@ export default function MainWithTabs() {
             flexGrow: 1,
             overflow: "auto",
             padding: 2,
-            backgroundColor: "#fff",
+            backgroundColor: "#f5f7fa",
+            backgroundImage: "linear-gradient(135deg, #f5f7fa 0%, #e8f0f8 100%)",
           }}
         >
           {tabs.map((key) => (
@@ -283,6 +420,12 @@ export default function MainWithTabs() {
       <Dialog
         open={logoutDialogOpen}
         onClose={() => setLogoutDialogOpen(false)}
+        PaperProps={{
+          sx: {
+            borderRadius: "12px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
+          }
+        }}
       >
         <DialogTitle>登出確認</DialogTitle>
         <DialogContent>
