@@ -111,6 +111,7 @@ const QuestionReportRecords  = props => {
         { field: '工作一整天之後，你覺得精疲力竭嗎?', headerName: "工作一整天之後，你覺得精疲力竭嗎?", width: 220, tooltipField: '工作一整天之後，你覺得精疲力竭嗎?', cellStyle: { textAlign: 'left' } },
         { field: '上班之前只要想到又要工作一整天，你就覺得沒力嗎?', headerName: "上班之前只要想到又要工作一整天，你就覺得沒力嗎?", width: 220, tooltipField: '上班之前只要想到又要工作一整天，你就覺得沒力嗎?' , cellStyle: { textAlign: 'left' }},
         { field: '上班時你會覺得每一刻都很難熬嗎?', headerName: "上班時你會覺得每一刻都很難熬嗎?", width: 220, tooltipField: '上班時你會覺得每一刻都很難熬嗎?', cellStyle: { textAlign: 'left' } },
+        { field: '不工作的時候，你有足夠的精力陪朋友或家人嗎?', headerName: "不工作的時候，你有足夠的精力陪朋友或家人嗎?", width: 200, tooltipField: '不工作的時候，你有足夠的精力陪朋友或家人嗎?', cellStyle: { textAlign: 'left' } },
         { field: '計分方式2問題', headerName: "計分方式2問題", width: 160, tooltipField: '計分方式2問題', cellStyle: { textAlign: 'left' } },
         // { field: '計分方式2選項', headerName: "計分方式2選項", width: 160, tooltipField: '計分方式2選項', cellStyle: { textAlign: 'left' } },
         { field: '計分方式2', headerName: "計分方式2", width: 160, tooltipField: '計分方式2', cellStyle: { textAlign: 'left' } },

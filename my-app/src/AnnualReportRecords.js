@@ -222,6 +222,31 @@ const AnnualReportRecords = () => {
           >
             查詢
           </Button>
+          {/* {rowData.length > 0 && (
+            <Button 
+              onClick={async () => {
+                try {
+                  await PF.exportToPDFAnnualCheckup(customerInfo, rowData, columnDefs);
+                  enqueueSnackbar("PDF 已匯出", { variant: "success", style: { whiteSpace: 'pre-line' } });
+                } catch (error) {
+                  enqueueSnackbar("PDF 匯出失敗", { variant: "error", style: { whiteSpace: 'pre-line' } });
+                }
+              }}
+              variant="contained" 
+              color="success" 
+              sx={{ 
+                fontWeight: 700,
+                textTransform: 'none',
+                fontSize: '16px',
+                px: 3,
+                height: 40,
+                borderRadius: 1.5,
+                '&:hover': { boxShadow: 3 }
+              }}
+            >
+              匯出 PDF
+            </Button>
+          )} */}
         </Box>
       </Paper>
 

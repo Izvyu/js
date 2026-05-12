@@ -1,5 +1,8 @@
 import axios from "axios";
 import _ from 'lodash';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 const R = require("ramda");
 
@@ -190,6 +193,169 @@ function swapArrayLocs(arr, index1, index2) {
   arr[index2] = temp;
   return arr;
 }
+
+const PDF_FONT_NAME = 'NotoSansTC';
+const PDF_FONT_FILE = 'NotoSansTC-VF.ttf';
+let pdfFontPromise = null;
+
+const arrayBufferToBase64 = buffer => {
+  const bytes = new Uint8Array(buffer);
+  const chunkSize = 0x8000;
+  let binary = '';
+
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+
+  return window.btoa(binary);
+};
+
+const loadPdfFont = () => {
+  if (!pdfFontPromise) {
+    const publicUrl = process.env.PUBLIC_URL || '';
+    pdfFontPromise = fetch(`${publicUrl}/fonts/${PDF_FONT_FILE}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`PDF font load failed: ${response.status}`);
+        }
+
+        return response.arrayBuffer();
+      })
+      .then(arrayBufferToBase64);
+  }
+
+  return pdfFontPromise;
+};
+
+const registerPdfFont = async doc => {
+  const fontBase64 = await loadPdfFont();
+
+  doc.addFileToVFS(PDF_FONT_FILE, fontBase64);
+  doc.addFont(PDF_FONT_FILE, PDF_FONT_NAME, 'normal');
+  doc.addFont(PDF_FONT_FILE, PDF_FONT_NAME, 'bold');
+  doc.setFont(PDF_FONT_NAME, 'normal');
+};
+
+// PDF 導出函數 - 年度檢查紀錄
+const exportToPDFAnnualCheckup = async (customerInfo, rowData, columnDefs) => {
+  try {
+    console.log('開始導出 PDF...');
+    console.log('客戶信息:', customerInfo);
+    console.log('行數:', rowData.length);
+    console.log('列數:', columnDefs.length);
+
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a3',
+      putOnlyUsedFonts: true
+    });
+    await registerPdfFont(doc);
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    
+    let yPosition = 15;
+
+    // 標題
+    doc.setFontSize(16);
+    doc.setFont(PDF_FONT_NAME, 'bold');
+    doc.text('年度檢查紀錄', pageWidth / 2, yPosition, { align: 'center' });
+    yPosition += 8;
+
+    // 客戶信息
+    doc.setFontSize(10);
+    doc.setFont(PDF_FONT_NAME, 'normal');
+    const infoText = `姓名: ${customerInfo.Name}  |  身分證: ${customerInfo.id}  |  生日: ${customerInfo.Birthday}  |  年齡: ${customerInfo.Age}`;
+    doc.text(infoText, 15, yPosition);
+    yPosition += 8;
+
+    // 提取日期列（排除 ItemName, Reference）
+    const dateColumns = columnDefs.filter(col => col.field !== 'ItemName' && col.field !== 'Reference');
+    console.log('日期列數:', dateColumns.length);
+
+    // 表格表頭
+    const tableColumns = ['項目名稱', '參考值', ...dateColumns.map(col => col.headerName)];
+    const margin = { left: 10, right: 10 };
+    const availableWidth = pageWidth - margin.left - margin.right;
+    const cellWidth = availableWidth / tableColumns.length;
+
+    // 表格數據 - 簡化版本
+    const tableData = rowData.map(row => [
+      row.ItemName || '',
+      row.Reference || '',
+      ...dateColumns.map(col => row[col.field] || '')
+    ]);
+
+    console.log('表格資料行數:', tableData.length);
+
+    // 生成表格
+    autoTable(doc, {
+      head: [tableColumns],
+      body: tableData,
+      startY: yPosition,
+      theme: 'grid',
+      styles: {
+        font: PDF_FONT_NAME,
+        fontStyle: 'normal',
+        fontSize: 8,
+        cellPadding: 2,
+        cellWidth,
+        overflow: 'linebreak',
+        halign: 'center',
+        valign: 'middle',
+        minCellHeight: 8
+      },
+      headStyles: {
+        font: PDF_FONT_NAME,
+        fillColor: [25, 118, 210],
+        textColor: 255,
+        fontStyle: 'bold',
+        halign: 'center'
+      },
+      bodyStyles: {
+        textColor: [0, 0, 0]
+      },
+      margin,
+      tableWidth: availableWidth,
+      pageBreak: 'auto',
+      rowPageBreak: 'avoid',
+      didParseCell: data => {
+        if (data.section !== 'body' || data.column.index < 2) {
+          return;
+        }
+
+        const sourceRow = rowData[data.row.index];
+        const dateColumn = dateColumns[data.column.index - 2];
+
+        if (sourceRow?.ErrMap?.[dateColumn?.field] === true) {
+          data.cell.styles.textColor = [211, 47, 47];
+          data.cell.styles.fontStyle = 'bold';
+        }
+      }
+    });
+
+    // 頁尾：產出日期
+    doc.setFont(PDF_FONT_NAME, 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text(
+      `產出日期: ${new Date().toLocaleDateString('zh-TW')}`,
+      pageWidth / 2,
+      pageHeight - 10,
+      { align: 'center' }
+    );
+
+    const fileName = `年度檢查紀錄_${customerInfo.id}_${new Date().toISOString().split('T')[0]}.pdf`;
+    console.log('準備儲存檔案:', fileName);
+    doc.save(fileName);
+    console.log('PDF 已成功產生！');
+  } catch (error) {
+    console.error('PDF 導出失敗 - 詳細錯誤:', error);
+    console.error('堆棧:', error.stack);
+    throw error;
+  }
+};
 
 function dataFactory() {
   const rows = [];
@@ -462,6 +628,7 @@ const publicFunction = {
   isSameDate: isSameDate,
   calculateHours: calculateHours,
   swapArrayLocs: swapArrayLocs,
+  exportToPDFAnnualCheckup: exportToPDFAnnualCheckup,
 };
 
 export default publicFunction;
