@@ -114,6 +114,25 @@ const StoamchRecords = props => {
     const gridRef2 = React.useRef();
 
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
+    const pageStyle = useMemo(() => ({
+        minHeight: 'calc(100vh - 32px)',
+        boxSizing: 'border-box',
+        padding: '18px',
+        borderRadius: '14px',
+        background: '#f5f7fb',
+    }), []);
+    const gridShellStyle = useMemo(() => ({
+        height: 'calc(100vh - 156px)',
+        minHeight: 520,
+        width: '100%',
+        '--ag-font-size': '13px',
+        '--ag-header-height': '42px',
+        '--ag-row-hover-color': '#eef5ff',
+        '--ag-selected-row-background-color': '#dcecff',
+        '--ag-border-color': '#d7dee8',
+        '--ag-header-background-color': '#f8fafc',
+        '--ag-odd-row-background-color': '#fbfdff',
+    }), []);
     // const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const [rowData, setRowData] = useState();
 
@@ -319,17 +338,28 @@ const StoamchRecords = props => {
     
 
     return (
-        <>
+        <div style={pageStyle}>
             {/* <DatePicker onChange={onChange}  format={dateFormat} />    */}
            
              {/* <RangePicker onChange={onChange} format={dateFormat} /> */}
              {/* <Input placeholder="Itemno" value={Itemno} onChange={(e) => setItemno(e.target.value)} style={{ width: '80px', marginRight: '5px', marginLeft: '3px' }} /> */}
-    <Grid container spacing={2} alignItems="center">
-        <Grid item sx={{ marginLeft: '5px' }}>
-            <RangePicker onChange={onChange} format={dateFormat} />
+            <Paper
+                elevation={0}
+                sx={{
+                    mb: 2,
+                    p: 2,
+                    border: '1px solid #dde5ef',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 8px 24px rgba(20, 41, 70, 0.06)',
+                }}
+            >
+                <Grid container spacing={1.5} alignItems="center">
+                    <Grid item xs={12} md="auto">
+                        <RangePicker onChange={onChange} format={dateFormat} style={{ width: '100%', minWidth: 250, height: 40 }} />
         </Grid>
-        <Grid item>
-            <FormControl style={{ marginRight: '8px', marginLeft: '3px', marginTop: '6px', marginBottom: '4px' }}>
+                    <Grid item xs={12} md="auto">
+                        <FormControl fullWidth>
                 <Autocomplete
                     value={settingObj.CheckNo.value || ""}
                     isOptionEqualToValue={(option, value) => option === value}
@@ -349,7 +379,12 @@ const StoamchRecords = props => {
                         </li>
                     )}
                     options={ProjectList}
-                    sx={{ width: 280 }}
+                    sx={{
+                        width: { xs: '100%', md: 300 },
+                        '& .MuiOutlinedInput-root': {
+                            backgroundColor: '#fff',
+                        },
+                    }}
                     renderInput={(params) =>
                         <TextField {...params}
                             size="small"
@@ -361,21 +396,33 @@ const StoamchRecords = props => {
                 />
             </FormControl>
         </Grid>
-        <Grid item>
-            <Input placeholder="Value" value={Value} onChange={(e) => setValue(e.target.value)} style={{ width: '480px', height: '43px', marginRight: '3px', marginTop: '3px' }} />
+                    <Grid item xs={12} md>
+                        <Input placeholder="Value" value={Value} onChange={(e) => setValue(e.target.value)} style={{ width: '100%', height: 40 }} />
         </Grid>
-        <Grid item>
+                    <Grid item xs={12} sm="auto" sx={{ '& .MuiButton-root': { minWidth: 96, height: 40, width: '100%', boxShadow: 'none' } }}>
             <Button onClick={handleQuery} variant="contained">查詢</Button>
         </Grid>
-        <Grid item sx={{ marginLeft: '200px' }}>
+                    <Grid item xs={12} sm="auto" sx={{ ml: { md: 'auto' }, '& .MuiButton-root': { minWidth: 104, height: 40, width: '100%', boxShadow: 'none' } }}>
             <Button onClick={handleLogoutClick} variant="contained" startIcon={<ExitToAppIcon />}>登出</Button>
         </Grid>
-    </Grid>
+                </Grid>
+            </Paper>
            
-            <Grid container spacing={0} sx={{ pl: 2 }}>
-                <Grid item xs={12} md={6} textAlign="right">
+            <Paper
+                elevation={0}
+                sx={{
+                    p: 1,
+                    border: '1px solid #dde5ef',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 8px 24px rgba(20, 41, 70, 0.05)',
+                    overflow: 'hidden',
+                }}
+            >
+            <Grid container spacing={0}>
+                <Grid item xs={12}>
                 <div style={containerStyle}>
-                    <div  className="ag-theme-alpine" style={{ height: '93vh', width: '98vw' }}>
+                    <div className="ag-theme-alpine" style={gridShellStyle}>
                         <AgGridReact
                             ref={gridRef}
                             rowData={todayList}
@@ -419,6 +466,7 @@ const StoamchRecords = props => {
 
                 </Grid> */}
             </Grid>
+            </Paper>
 
 
 
@@ -439,7 +487,7 @@ const StoamchRecords = props => {
                     <Button onClick={confirmLogout} variant="contained" color="error">確認登出</Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </div>
 
     )
 }
