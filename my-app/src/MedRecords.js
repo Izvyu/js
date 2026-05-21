@@ -87,6 +87,25 @@ const MedRecords = props => {
     const gridRef2 = React.useRef();
 
     const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
+    const pageStyle = useMemo(() => ({
+        minHeight: 'calc(100vh - 32px)',
+        boxSizing: 'border-box',
+        padding: '18px',
+        borderRadius: '14px',
+        background: '#f5f7fb',
+    }), []);
+    const gridShellStyle = useMemo(() => ({
+        height: 'calc(100vh - 158px)',
+        minHeight: 520,
+        width: '100%',
+        '--ag-font-size': '13px',
+        '--ag-header-height': '42px',
+        '--ag-row-hover-color': '#eef5ff',
+        '--ag-selected-row-background-color': '#dcecff',
+        '--ag-border-color': '#d7dee8',
+        '--ag-header-background-color': '#f8fafc',
+        '--ag-odd-row-background-color': '#fbfdff',
+    }), []);
     // const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const [rowData, setRowData] = useState();
 
@@ -360,10 +379,29 @@ const MedRecords = props => {
     // const [locale, setLocale] = React.useState(locales[0]);
 
     return (
-        <>
+        <div style={pageStyle}>
             {/* <DatePicker onChange={onChange}  format={dateFormat} />    */}
 
-            <RangePicker onChange={onChange} format={dateFormat} style={{ marginBottom: '5px' }} />
+            <Paper
+                elevation={0}
+                sx={{
+                    mb: 2,
+                    p: 2,
+                    border: '1px solid #dde5ef',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 8px 24px rgba(20, 41, 70, 0.06)',
+                }}
+            >
+                <Grid container spacing={1.5} alignItems="center">
+                    <Grid item xs={12} md="auto">
+                        <RangePicker onChange={onChange} format={dateFormat} style={{ width: '100%', minWidth: 250, height: 40 }} />
+                    </Grid>
+                    <Grid item xs={12} sm="auto" sx={{ '& .MuiButton-root': { minWidth: 96, height: 40, width: '100%', boxShadow: 'none' } }}>
+                        <Button onClick={handleQuery} variant="contained">查詢</Button>
+                    </Grid>
+                </Grid>
+            </Paper>
             {/* <Input placeholder="Itemno" value={Itemno} onChange={(e) => setItemno(e.target.value)} style={{ width: '80px', marginRight: '5px', marginLeft: '3px' }} /> */}
             {/* <FormControl style={{  marginRight: '5px', marginLeft: '3px',marginTop: '6px',marginBottom: '4px' }}>
                             <Autocomplete
@@ -398,12 +436,21 @@ const MedRecords = props => {
                                         />
              </FormControl> */}
             {/* <Input placeholder="Value" value={Value} onChange={(e) => setValue(e.target.value)} style={{ width: '400px',height: '45px', marginRight: '5px',marginTop: '3px' }} />            */}
-            <Button onClick={handleQuery} variant="contained" style={{ marginLeft: '5px' }}>查詢</Button>
-
-            <Grid container spacing={0}>
-                <Grid item xs={12} md={6} textAlign="right">
+            <Paper
+                elevation={0}
+                sx={{
+                    p: 1,
+                    border: '1px solid #dde5ef',
+                    borderRadius: '12px',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 8px 24px rgba(20, 41, 70, 0.05)',
+                    overflow: 'hidden',
+                }}
+            >
+            <Grid container spacing={1}>
+                <Grid item xs={12} md={6}>
                     <div style={containerStyle}>
-                        <div className="ag-theme-alpine" style={{ height: 660, width: 760 }}>
+                        <div className="ag-theme-alpine" style={gridShellStyle}>
                             <AgGridReact
                                 ref={gridRef}
                                 rowData={todayList}
@@ -433,7 +480,7 @@ const MedRecords = props => {
                     </div>
                 </Grid>
                 <Grid item xs={12} md={6}>
-                    <div className="ag-theme-alpine" style={{ height: 660, width: 780 }}>
+                    <div className="ag-theme-alpine" style={gridShellStyle}>
                         <AgGridReact
                             ref={gridRef2}
                             rowData={historyPerson}
@@ -452,6 +499,7 @@ const MedRecords = props => {
 
                 </Grid>
             </Grid>
+            </Paper>
 
 
 
@@ -461,7 +509,7 @@ const MedRecords = props => {
                 onClick={handleQuery}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-        </>
+        </div>
 
     )
 }
