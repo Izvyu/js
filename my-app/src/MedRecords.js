@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState, StrictMode, useCallback } from 'react';
-import { Grid, Checkbox, FormGroup, FormControlLabel, Chip, Paper, FormControl, FormLabel, TextField, Button, IconButton, MenuItem, Stack } from '@mui/material';
+import { Grid, Checkbox, FormGroup, FormControlLabel, Chip, Paper, FormControl, FormLabel, TextField, Button, IconButton, MenuItem, Stack, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise';
 
@@ -17,6 +17,10 @@ import moment from 'moment';
 import { and } from 'ramda';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { actions } from "./reducers/app";
+import LogoutIcon from '@mui/icons-material/Logout';
 // import dayjs from 'dayjs';
 // import { DatePicker2 } from "@progress/kendo-react-dateinputs";
 // import {
@@ -65,8 +69,11 @@ const MedRecords = props => {
 
 
     const [open, setOpen] = React.useState(false);
+    const [openLogoutConfirm, setOpenLogoutConfirm] = React.useState(false);
 
     const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const statusBar = React.useMemo(() => {
         return {
             statusPanels: [
@@ -364,6 +371,20 @@ const MedRecords = props => {
 
     const rowHeight = 30;
 
+    const handleLogoutClick = () => {
+        setOpenLogoutConfirm(true);
+    };
+
+    const confirmLogout = () => {
+        setOpenLogoutConfirm(false);
+        dispatch(actions.UserInfo({}));
+        dispatch(actions.TOKEN_SET(""));
+        localStorage.removeItem("UserInfo");
+        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
+        navigate('/MedReportlogin', { replace: true });
+    };
+
 
 
     // const locales = [
@@ -399,6 +420,17 @@ const MedRecords = props => {
                     </Grid>
                     <Grid item xs={12} sm="auto" sx={{ '& .MuiButton-root': { minWidth: 96, height: 40, width: '100%', boxShadow: 'none' } }}>
                         <Button onClick={handleQuery} variant="contained">查詢</Button>
+                    </Grid>
+                    <Grid item xs={12} sm sx={{ display: 'flex', justifyContent: { xs: 'stretch', sm: 'flex-end' } }}>
+                        <Button
+                            onClick={handleLogoutClick}
+                            variant="contained"
+                            color="error"
+                            startIcon={<LogoutIcon />}
+                            sx={{ minWidth: 96, height: 40, width: { xs: '100%', sm: 'auto' }, boxShadow: 'none' }}
+                        >
+                            登出
+                        </Button>
                     </Grid>
                 </Grid>
             </Paper>
@@ -509,6 +541,16 @@ const MedRecords = props => {
                 onClick={handleQuery}>
                 <CircularProgress color="inherit" />
             </Backdrop>
+            <Dialog open={openLogoutConfirm} onClose={() => setOpenLogoutConfirm(false)}>
+                <DialogTitle>確認登出</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>確定要登出嗎？</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenLogoutConfirm(false)}>取消</Button>
+                    <Button onClick={confirmLogout} variant="contained" color="error">確認登出</Button>
+                </DialogActions>
+            </Dialog>
         </div>
 
     )
