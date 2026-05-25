@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
-const PrivateRoute = ({ children, loginPage }) => {
+const PrivateRoute = ({ children, loginPage, authKey }) => {
   const { UserInfo } = useSelector(state => ({
     UserInfo: state.app.UserInfo,
   }));
@@ -10,7 +10,13 @@ const PrivateRoute = ({ children, loginPage }) => {
 
   // 嘗試從 Redux 或 localStorage 取得使用者資料
   const storedUser = JSON.parse(localStorage.getItem("UserInfo"));
-  const isLoggedIn = UserInfo?.PersonalId !== undefined || storedUser?.PersonalId !== undefined;
+  let isLoggedIn = UserInfo?.PersonalId !== undefined || storedUser?.PersonalId !== undefined;
+
+  if (authKey) {
+    const hasAuthFlag = sessionStorage.getItem(authKey) === "true";
+    const hasToken = Boolean(sessionStorage.getItem("token"));
+    isLoggedIn = hasAuthFlag && hasToken;
+  }
 
   if (!isLoggedIn) {
     let targetLogin = loginPage;

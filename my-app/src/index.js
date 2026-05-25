@@ -32,6 +32,7 @@ import PayableRecords from './PayableRecords';
 import QueryReportlogin from './QueryReportlogin';
 import CustomercomplaintRecords from './CustomercomplaintRecords';
 import MedReportlogin from './MedReportlogin';
+import QuestionReportlogin from './QuestionReportlogin';
 
 
 
@@ -121,7 +122,7 @@ const Init=()=>{
             <Route path="/login" element={<Login />} />
             <Route path="/Weblink" element={<Weblink />} />
             <Route path="/SourceRecords" element={<SourceRecords />} />
-            <Route path="/QuestionReportRecords" element={<QuestionReportRecords />} />
+            <Route path="/QuestionReportRecords" element={<PrivateRoute loginPage="/QuestionReportlogin" authKey="QuestionReportAuth"><QuestionReportRecords /></PrivateRoute>} />
             <Route path="/CustomercomplaintRecords" element={<CustomercomplaintRecords />} />
             {/* <Route path="/AnnualReportRecords" element={<AnnualReportRecords />} /> */}
             {/* <Route path="/ReceipttimeRecords" element={<ReceipttimeRecords />} />
@@ -134,6 +135,7 @@ const Init=()=>{
             <Route path="/Tgid" element={<PrivateRoute><Tgid/></PrivateRoute>} />
             <Route path="/MedReportlogin" element={<MedReportlogin />} />
             <Route path="/MedRecords" element={<PrivateRoute loginPage="/MedReportlogin"><MedRecords /></PrivateRoute>} />
+            <Route path="/QuestionReportlogin" element={<QuestionReportlogin />} />
             {/* {`${process.env.PUBLIC_URL}` === '/PurchaseRecords' ? <Route path="/AnnualReportRecords" element={<PrivateRoute><AnnualReportRecords /></PrivateRoute>} /> : null} */}
              
               {/* {`${process.env.PUBLIC_URL}` === '/examineAdmin' ? <Route path="/AdminLogin" element={<AdminLogin />} /> : null} */}

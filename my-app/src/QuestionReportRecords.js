@@ -1,5 +1,5 @@
 import React, { useEffect,useMemo,useRef,useState,StrictMode, } from 'react';
-import { Grid, Checkbox, FormGroup, FormControlLabel, Chip, Paper, FormControl, FormLabel, TextField, Button, IconButton, MenuItem, Stack } from '@mui/material';
+import { Grid, Checkbox, FormGroup, FormControlLabel, Chip, Paper, FormControl, FormLabel, TextField, Button, IconButton, MenuItem, Stack, Box, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise';
 
@@ -28,6 +28,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 // import 'antd/dist/antd.css';
 import Autocomplete from '@mui/material/Autocomplete';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { actions } from "./reducers/app";
+import LogoutIcon from '@mui/icons-material/Logout';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 
@@ -66,8 +71,11 @@ const QuestionReportRecords  = props => {
     
 
     const [open, setOpen] = React.useState(false);
+    const [openLogoutConfirm, setOpenLogoutConfirm] = React.useState(false);
    
     const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const statusBar = React.useMemo(() => {
         return {
             statusPanels: [
@@ -403,6 +411,22 @@ const QuestionReportRecords  = props => {
 
     const rowHeight = 30;
 
+    const handleLogoutClick = () => {
+        setOpenLogoutConfirm(true);
+    };
+
+    const confirmLogout = () => {
+        dispatch(actions.UserInfo({}));
+        dispatch(actions.TOKEN_SET(""));
+        localStorage.removeItem("UserInfo");
+        localStorage.removeItem("token");
+        localStorage.removeItem("QuestionReportAuth");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("QuestionReportAuth");
+        setOpenLogoutConfirm(false);
+        navigate("/QuestionReportlogin", { replace: true });
+    };
+
     
 
     // const locales = [
@@ -418,7 +442,42 @@ const QuestionReportRecords  = props => {
     // const [locale, setLocale] = React.useState(locales[0]);
 
     return (
-        <>
+        <Box sx={{ minHeight: '100vh', backgroundColor: '#eef3f8', p: 2 }}>
+            <Paper
+                elevation={3}
+                sx={{
+                    p: 2.5,
+                    mb: 2,
+                    borderLeft: '4px solid #1976d2',
+                    borderRadius: 2,
+                    backgroundColor: '#ffffff'
+                }}
+            >
+                <Stack
+                    direction={{ xs: 'column', md: 'row' }}
+                    spacing={2}
+                    alignItems={{ xs: 'stretch', md: 'center' }}
+                    justifyContent="space-between"
+                    sx={{ mb: 2 }}
+                >
+                    <Box>
+                        <Typography variant="h5" sx={{ fontWeight: 700, color: '#174a7c' }}>
+                            問卷報表紀錄
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#6b7a90', mt: 0.5 }}>
+                            請選擇日期區間、專案與問卷編號後查詢
+                        </Typography>
+                    </Box>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={handleLogoutClick}
+                        startIcon={<LogoutIcon />}
+                        sx={{ height: 40, px: 2.5, fontWeight: 700, borderRadius: 1.5 }}
+                    >
+                        登出
+                    </Button>
+                </Stack>
             {/* <DatePicker onChange={onChange}  format={dateFormat} />    */}
            
             <RangePicker onChange={onChange} format={dateFormat}style={{ marginBottom: '5px', height: '40px', marginTop: '5px' }}    inputStyle={{ height: '20px' }}  />
@@ -472,12 +531,14 @@ const QuestionReportRecords  = props => {
                         <option value="69">69</option>
                     </TextField>
              {/* <Input placeholder="Value" value={Value} onChange={(e) => setValue(e.target.value)} style={{ width: '400px',height: '45px', marginRight: '5px',marginTop: '3px' }} />            */}
-             <Button onClick={handleQuery} variant="contained" style={{ marginLeft: '5px' }}>查詢</Button>
+             <Button onClick={handleQuery} variant="contained" startIcon={<SearchIcon />} style={{ marginLeft: '5px', height: '40px' }}>查詢</Button>
+            </Paper>
            
-                   <Grid container spacing={0}>
-                    <Grid item xs={12} md={6} >
+            <Paper elevation={3} sx={{ height: 'calc(100vh - 178px)', p: 1.5, borderRadius: 2, backgroundColor: '#ffffff' }}>
+                   <Grid container spacing={0} sx={{ height: '100%' }}>
+                    <Grid item xs={12} sx={{ height: '100%' }}>
                      <div style={containerStyle}>
-                        <div  className="ag-theme-alpine" style={{ height: '94vh', width: '100vw' }}>
+                        <div  className="ag-theme-alpine" style={{ height: '100%', width: '100%' }}>
                             <AgGridReact
                             ref={gridRef}
                             rowData={rowData} // 根據條件設置 rowData
@@ -494,16 +555,32 @@ const QuestionReportRecords  = props => {
                     </div>
                 </Grid>
             </Grid>
+            </Paper>
 
 
 
             <Backdrop
             sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={open}
-            onClick={handleQuery}>
+            open={open}>
             <CircularProgress color="inherit" />
             </Backdrop>
-        </>
+            <Dialog open={openLogoutConfirm} onClose={() => setOpenLogoutConfirm(false)}>
+                <DialogTitle sx={{ fontWeight: 700, color: '#d32f2f' }}>確認登出</DialogTitle>
+                <DialogContent>
+                    <DialogContentText sx={{ color: '#333', mt: 1 }}>
+                        確定要登出問卷報表嗎？
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{ p: 2, gap: 1 }}>
+                    <Button onClick={() => setOpenLogoutConfirm(false)} variant="outlined">
+                        取消
+                    </Button>
+                    <Button onClick={confirmLogout} variant="contained" color="error">
+                        確認登出
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Box>
 
     )
 }
