@@ -36,6 +36,13 @@ const companyOptions = [
   { CompanyId: 5, CompanyCode: 'SC', CompanyName: '竹北守葳公司' },
 ];
 
+const statusOptions = [
+  { value: 'Active', label: '使用中', color: '#2e7d32', backgroundColor: '#e8f5e9' },
+  { value: 'Idle', label: '閒置', color: '#1565c0', backgroundColor: '#e3f2fd' },
+  { value: 'Repair', label: '維修', color: '#ef6c00', backgroundColor: '#fff3e0' },
+  { value: 'Scrap', label: '報廢', color: '#c62828', backgroundColor: '#ffebee' },
+];
+
 const emptyAsset = {
   Id: '',
   CompanyId: 1,
@@ -72,7 +79,7 @@ const assetFields = [
   { name: 'GPU', label: '顯示卡' },
   { name: 'Monitor', label: '螢幕' },
   { name: 'MACAddress', label: 'MAC 位址' },
-  { name: 'Status', label: '狀態' },
+  { name: 'Status', label: '狀態', type: 'statusSelect' },
   { name: 'Remark', label: '備註', multiline: true, xs: 12 },
 ];
 
@@ -111,7 +118,30 @@ const ComputerAsset = () => {
     { field: 'GPU', headerName: '顯示卡', width: 160, tooltipField: 'GPU' },
     { field: 'Monitor', headerName: '螢幕', width: 160, tooltipField: 'Monitor' },
     { field: 'MACAddress', headerName: 'MAC 位址', width: 170, tooltipField: 'MACAddress' },
-    { field: 'Status', headerName: '狀態', width: 110, tooltipField: 'Status' },
+    {
+      field: 'Status',
+      headerName: '狀態',
+      width: 110,
+      tooltipField: 'Status',
+      valueFormatter: params => {
+        const status = statusOptions.find(item => item.value === params.value);
+        return status ? status.label : params.value;
+      },
+      cellStyle: params => {
+        const status = statusOptions.find(item => item.value === params.value);
+
+        if (!status) {
+          return { textAlign: 'center' };
+        }
+
+        return {
+          textAlign: 'center',
+          color: status.color,
+          backgroundColor: status.backgroundColor,
+          fontWeight: 700,
+        };
+      },
+    },
     { field: 'Remark', headerName: '備註', width: 220, tooltipField: 'Remark' },
     { field: 'CreateTime', headerName: '建立時間', width: 150, tooltipField: 'CreateTime' },
     { field: 'UpdateTime', headerName: '更新時間', width: 150, tooltipField: 'UpdateTime' },
@@ -428,7 +458,7 @@ const ComputerAsset = () => {
               <Grid item xs={field.xs || 12} sm={field.xs || 6} key={field.name}>
                 <TextField
                   fullWidth
-                  select={field.type === 'select'}
+                  select={field.type === 'select' || field.type === 'statusSelect'}
                   size="small"
                   type={field.type === 'date' ? 'date' : 'text'}
                   name={field.name}
@@ -443,6 +473,11 @@ const ComputerAsset = () => {
                   {field.type === 'select' && companyOptions.map(company => (
                     <MenuItem key={company.CompanyId} value={company.CompanyId}>
                       {company.CompanyName}（{company.CompanyCode}）
+                    </MenuItem>
+                  ))}
+                  {field.type === 'statusSelect' && statusOptions.map(status => (
+                    <MenuItem key={status.value} value={status.value}>
+                      {status.label}
                     </MenuItem>
                   ))}
                 </TextField>
