@@ -304,6 +304,12 @@ const ComputerAsset = () => {
 
         const nextCompanyId = Number(payload.CompanyId || companyId);
 
+        if (isCreate) {
+          setCompanyId(nextCompanyId);
+          handleQuery(nextCompanyId);
+          return;
+        }
+
         if (!isCreate) {
           setRowData(prevRows => {
             if (nextCompanyId !== Number(companyId)) {
@@ -317,7 +323,6 @@ const ComputerAsset = () => {
         }
 
         setCompanyId(nextCompanyId);
-        handleQuery(nextCompanyId);
       })
       .catch(() => {
         setOpen(false);
@@ -416,7 +421,7 @@ const ComputerAsset = () => {
               startIcon={<SearchIcon />}
               sx={{ height: 40, px: 2.5, fontWeight: 700, borderRadius: 1.5 }}
             >
-              重整
+              刷新
             </Button>
             <Button
               onClick={openCreateDialog}
