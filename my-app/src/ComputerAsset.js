@@ -469,7 +469,7 @@ const ComputerAsset = () => {
               <Grid item xs={field.xs || 12} sm={field.xs || 6} key={field.name}>
                 <TextField
                   fullWidth
-                  select={field.type === 'select' || field.type === 'statusSelect'}
+                  select={field.type === 'select' || field.type === 'statusSelect' || field.type === 'assetTypeSelect'}
                   size="small"
                   type={field.type === 'date' ? 'date' : 'text'}
                   name={field.name}
