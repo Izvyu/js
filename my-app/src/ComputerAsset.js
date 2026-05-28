@@ -43,6 +43,12 @@ const statusOptions = [
   { value: 'Scrap', label: '報廢', color: '#c62828', backgroundColor: '#ffebee' },
 ];
 
+const assetTypeOptions = [
+  { value: 'PC', label: '電腦' },
+  { value: 'Monitor', label: '螢幕' },
+  { value: 'Unknown', label: '其他' },
+];
+
 const emptyAsset = {
   Id: '',
   CompanyId: 1,
@@ -66,7 +72,7 @@ const emptyAsset = {
 
 const assetFields = [
   { name: 'CompanyId', label: '公司', type: 'select', required: true },
-  { name: 'AssetType', label: '資產類型', required: true },
+  { name: 'AssetType', label: '資產類型', type: 'assetTypeSelect', required: true },
   { name: 'AssetNo', label: '資產編號' },
   { name: 'FinanceAssetNo', label: '財產編號' },
   { name: 'ReceiveDate', label: '領用日期', type: 'date' },
@@ -448,7 +454,7 @@ const ComputerAsset = () => {
             enableStatusBar={true}
             statusBar={statusBar}
             rowHeight={30}
-            onRowClicked={event => openEditDialog(event.data)}
+            onRowDoubleClicked={event => openEditDialog(event.data)}
           />
         </div>
       </Paper>
@@ -478,6 +484,11 @@ const ComputerAsset = () => {
                   {field.type === 'select' && companyOptions.map(company => (
                     <MenuItem key={company.CompanyId} value={company.CompanyId}>
                       {company.CompanyName}（{company.CompanyCode}）
+                    </MenuItem>
+                  ))}
+                  {field.type === 'assetTypeSelect' && assetTypeOptions.map(assetType => (
+                    <MenuItem key={assetType.value} value={assetType.value}>
+                      {assetType.label}
                     </MenuItem>
                   ))}
                   {field.type === 'statusSelect' && statusOptions.map(status => (
