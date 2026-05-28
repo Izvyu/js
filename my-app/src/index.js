@@ -33,6 +33,7 @@ import QueryReportlogin from './QueryReportlogin';
 import CustomercomplaintRecords from './CustomercomplaintRecords';
 import MedReportlogin from './MedReportlogin';
 import QuestionReportlogin from './QuestionReportlogin';
+import ComputerAsset from './ComputerAsset';
 
 
 
@@ -136,6 +137,7 @@ const Init=()=>{
             <Route path="/MedReportlogin" element={<MedReportlogin />} />
             <Route path="/MedRecords" element={<PrivateRoute loginPage="/MedReportlogin"><MedRecords /></PrivateRoute>} />
             <Route path="/QuestionReportlogin" element={<QuestionReportlogin />} />
+            <Route path="/ComputerAsset" element={<ComputerAsset />} />
             {/* {`${process.env.PUBLIC_URL}` === '/PurchaseRecords' ? <Route path="/AnnualReportRecords" element={<PrivateRoute><AnnualReportRecords /></PrivateRoute>} /> : null} */}
              
               {/* {`${process.env.PUBLIC_URL}` === '/examineAdmin' ? <Route path="/AdminLogin" element={<AdminLogin />} /> : null} */}

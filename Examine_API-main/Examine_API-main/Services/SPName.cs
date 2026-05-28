@@ -126,6 +126,12 @@ namespace TodoApi2
     public readonly static string sp_Checklogin = "[dbo].[sp_Checklogin]";//採購權限登入
 
     public readonly static string sp_Customer_Complaint = "[dbo].[sp_Customer_Complaint]";//客訴表單查詢
+
+    //電腦資產
+    public readonly static string sp_ComputerAssets_GetList = "[dbo].[sp_ComputerAssets_GetList]";//查詢
+    public readonly static string sp_ComputerAssets_Insert = "[dbo].[sp_ComputerAssets_Insert]";//新增
+    public readonly static string sp_ComputerAssets_Update = "[dbo].[sp_ComputerAssets_Update]";//修改
+    public readonly static string sp_ComputerAssets_Delete = "[dbo].[sp_ComputerAssets_Delete]";//刪除
         
 
 
