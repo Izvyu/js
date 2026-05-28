@@ -16,7 +16,7 @@ using SixLabors.ImageSharp.Web.Providers;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-string[] originAllowed = { "http://localhost:3000", "https://mj.mornjoy.com.tw/" };
+string[] originAllowed = { "http://localhost:3000", "https://mj.mornjoy.com.tw" };
 
 var builder = WebApplication.CreateBuilder(args);
 
