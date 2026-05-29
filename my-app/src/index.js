@@ -74,8 +74,14 @@ window.addEventListener("popstate", () => {
   history.go(1);
 });
 //不允許手動修改localStorage
+// window.addEventListener("storage", (e) => {
+//   localStorage.setItem(e.key, e.oldValue)
+// });
 window.addEventListener("storage", (e) => {
-  localStorage.setItem(e.key, e.oldValue)
+  // 只保護你的 Redux key，不干擾其他系統
+  if (e.key === 'persist:root' || e.key.startsWith('Purchase_')) {
+    localStorage.setItem(e.key, e.oldValue);
+  }
 });
 const store = configureStore({
   reducer: rootReducer, middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
