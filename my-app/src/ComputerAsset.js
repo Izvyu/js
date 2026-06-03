@@ -317,15 +317,19 @@ const ComputerAsset = () => {
         }
 
         if (!isCreate) {
-          setRowData(prevRows => {
-            if (nextCompanyId !== Number(companyId)) {
-              return prevRows.filter(row => Number(row.Id) !== Number(payload.Id));
-            }
-
-            return prevRows.map(row => (
-              Number(row.Id) === Number(payload.Id) ? { ...row, ...payload } : row
-            ));
-          });
+          if (nextCompanyId !== Number(companyId)) {
+            // 改變公司時才刪除這行，然後切換公司
+            gridRef.current?.api?.applyTransaction({
+              remove: [payload]
+            });
+            setCompanyId(nextCompanyId);
+          } else {
+            // 同公司編輯：直接更新該行，保持位置
+            gridRef.current?.api?.applyTransaction({
+              update: [payload]
+            });
+          }
+          return;
         }
 
         setCompanyId(nextCompanyId);
