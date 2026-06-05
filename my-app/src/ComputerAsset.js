@@ -324,7 +324,14 @@ const ComputerAsset = () => {
             });
             setCompanyId(nextCompanyId);
           } else {
-            // 同公司編輯：直接更新該行，保持位置
+            // 同公司編輯：只更新變更的那列
+            // 先更新 state
+            setRowData(prevRows =>
+              prevRows.map(row =>
+                Number(row.Id) === Number(payload.Id) ? payload : row
+              )
+            );
+            // 再更新 ag-grid 顯示
             gridRef.current?.api?.applyTransaction({
               update: [payload]
             });
