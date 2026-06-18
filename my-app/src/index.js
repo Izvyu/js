@@ -25,6 +25,7 @@ import Weblink from './Weblink';
 import StockRecords from './StockRecords';
 import GeneralStockRecords from './GeneralStockRecords';
 import PickinglistRecords from './PickinglistRecords';
+import PurchaseReceiveReportRecords from './PurchaseReceiveReportRecords';
 import Layout from './Layout';
 import AnnualReportRecords from './AnnualReportRecords';
 import AnnualReportlogin from './AnnualReportlogin';
@@ -111,7 +112,7 @@ const Init=()=>{
               <Route path="/StockRecords" element={<StockRecords />} />
               <Route path="/GeneralStockRecords" element={<GeneralStockRecords />} />
               <Route path="/PickinglistRecords" element={<PickinglistRecords />} />
-              <Route path="/PayableRecords" element={<PayableRecords />} /> */}
+              <Route path="/PurchaseReceiveReportRecords" element={<PurchaseReceiveReportRecords />} />
             {/* </Route> */}
             {/* <Route path="/PurchaseRecords" element={<PurchaseRecords />} /> */}
             <Route path="/" element={<PurchaseRecords />} />

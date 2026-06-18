@@ -35,6 +35,7 @@ import StockRecords from "./StockRecords";
 import GeneralStockRecords from "./GeneralStockRecords";
 import PickinglistRecords from "./PickinglistRecords";
 import PayableRecords from "./PayableRecords";
+import PurchaseReceiveReportRecords from "./PurchaseReceiveReportRecords";
 
 const tabConfig = {
   PurchaseRecords: { label: "請購未轉採購報表", component: <PurchaseRecords /> },
@@ -43,6 +44,7 @@ const tabConfig = {
   GeneralStockRecords: { label: "總務庫存查詢報表", component: <GeneralStockRecords /> },
   PickinglistRecords: { label: "領料查詢報表", component: <PickinglistRecords /> },
   PayableRecords: { label: "應付憑單報表", component: <PayableRecords /> },
+  PurchaseReceiveReportRecords: { label: "資材採購查詢報表", component: <PurchaseReceiveReportRecords /> },
 };
 
 export default function MainWithTabs() {
@@ -185,6 +187,21 @@ export default function MainWithTabs() {
             }}
           >
             <ListItemText primary="收貨時間報表" />
+          </ListItemButton>
+          <ListItemButton 
+            onClick={() => handleOpenTab("PurchaseReceiveReportRecords")}
+            sx={{
+              borderRadius: "8px",
+              mx: 1,
+              my: 0.5,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              "&:hover": {
+                backgroundColor: "rgba(255,255,255,0.15)",
+                paddingLeft: "24px",
+              },
+            }}
+          >
+            <ListItemText primary="資材採購報表查詢" />
           </ListItemButton>
 
           <ListItemText

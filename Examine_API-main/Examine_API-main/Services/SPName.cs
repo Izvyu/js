@@ -122,6 +122,8 @@ namespace TodoApi2
     public readonly static string prc_sp_query_AnnualReport = "[dbo].[prc_sp_query_AnnualReport]";//健檢資料比對表
 
     public readonly static string prc_sp_query_Payable = "[dbo].[prc_sp_query_Payable]";//應付憑單查詢
+    
+    public readonly static string sp_PurchaseReceiveReport = "[dbo].[sp_PurchaseReceiveReport]";//資材採購單查詢
 
     public readonly static string sp_Checklogin = "[dbo].[sp_Checklogin]";//採購權限登入
 
