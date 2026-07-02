@@ -134,7 +134,8 @@ namespace TodoApi2
     public readonly static string sp_ComputerAssets_Insert = "[dbo].[sp_ComputerAssets_Insert]";//新增
     public readonly static string sp_ComputerAssets_Update = "[dbo].[sp_ComputerAssets_Update]";//修改
     public readonly static string sp_ComputerAssets_Delete = "[dbo].[sp_ComputerAssets_Delete]";//刪除
-        
+    public readonly static string sp_ComputerAssets_GetListName = "[dbo].[sp_ComputerAssets_GetListName]";//查詢名稱
+    
 
 
 

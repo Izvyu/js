@@ -31,6 +31,14 @@ namespace TodoApi2.Controllers
         }
 
         [HttpPost]
+        public ActionResult GetListName([FromForm] ReceiveDTO<ComputerAsset> c)
+        {
+            ResultDTO result = Repository.GetListName(c.parameter);
+            var qry = new { TotalRecord = result.TotalRecord, rows = result.dtResult };
+            return Content(JsonConvert.SerializeObject(qry, new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd" }));
+        }
+
+        [HttpPost]
         public ActionResult Insert([FromForm] ReceiveDTO<ComputerAsset> c)
         {
             ResultDTO result = Repository.Insert(c.parameter);

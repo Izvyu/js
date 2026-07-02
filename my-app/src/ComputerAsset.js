@@ -18,7 +18,9 @@ import {
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import AddIcon from '@mui/icons-material/Add';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise';
@@ -99,6 +101,10 @@ const ComputerAsset = () => {
   const [dialogMode, setDialogMode] = React.useState('create');
   const [formData, setFormData] = React.useState({ ...emptyAsset });
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
+  const [searchName, setSearchName] = React.useState('');
+  const [pageNumber, setPageNumber] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(100);
+  const [totalRecord, setTotalRecord] = React.useState(0);
 
   const columnDefs = React.useMemo(() => [
     {
@@ -172,16 +178,22 @@ const ComputerAsset = () => {
     [companyId]
   );
 
-  const handleQuery = React.useCallback((queryCompanyId = companyId) => {
+  const handleQuery = React.useCallback((queryCompanyId = companyId, name = null, pageNumberParam = pageNumber, pageSizeParam = pageSize) => {
     setOpen(true);
+
+    const url = name ? (PF.url2 + '/ComputerAsset/GetListName') : (PF.url2 + '/ComputerAsset/GetList');
 
     PF.instance({
       method: 'post',
-      url: PF.url2 + '/ComputerAsset/GetList',
+      url,
       data: Qs.stringify({
         Action: '1',
         parameter: {
           CompanyId: Number(queryCompanyId),
+          // only include Name when searching by name API; for GetListName endpoint we pass Name
+          Name: name !== null ? (name ? name.trim() : null) : null,
+          PageNumber: Number(pageNumberParam),
+          PageSize: Number(pageSizeParam),
         },
       }),
       headers: { token: sessionStorage.token },
@@ -189,6 +201,7 @@ const ComputerAsset = () => {
       .then(response => {
         setOpen(false);
         const { TotalRecord, rows } = response.data;
+        setTotalRecord(TotalRecord || 0);
 
         if (TotalRecord < 0) {
           enqueueSnackbar('查詢失敗', { variant: 'error', style: { whiteSpace: 'pre-line' } });
@@ -213,11 +226,12 @@ const ComputerAsset = () => {
         enqueueSnackbar('查詢電腦資產資料失敗', { variant: 'error', style: { whiteSpace: 'pre-line' } });
         setRowData([]);
       });
-  }, [companyId, enqueueSnackbar]);
+  }, [companyId, enqueueSnackbar, pageNumber, pageSize]);
 
   React.useEffect(() => {
-    handleQuery(companyId);
-  }, [companyId, handleQuery]);
+    // On company or paging change, load list without name filter by default.
+    handleQuery(companyId, null, pageNumber, pageSize);
+  }, [companyId, pageNumber, pageSize, handleQuery]);
 
   const handleCompanyChange = event => {
     setCompanyId(Number(event.target.value));
@@ -247,6 +261,25 @@ const ComputerAsset = () => {
       ...row,
       CompanyId: Number(row.CompanyId || companyId),
       ReceiveDate: normalizeDateValue(row.ReceiveDate),
+    });
+    setDialogOpen(true);
+  };
+
+  const duplicateRow = () => {
+    const selected = gridRef.current?.api?.getSelectedRows() || [];
+    if (selected.length !== 1) {
+      enqueueSnackbar('請選取一筆要複製的列', { variant: 'warning' });
+      return;
+    }
+
+    const src = selected[0];
+    setDialogMode('create');
+    setFormData({
+      ...emptyAsset,
+      ...src,
+      Id: '',
+      CompanyId: Number(src.CompanyId || companyId),
+      ReceiveDate: normalizeDateValue(src.ReceiveDate),
     });
     setDialogOpen(true);
   };
@@ -312,7 +345,8 @@ const ComputerAsset = () => {
 
         if (isCreate) {
           setCompanyId(nextCompanyId);
-          handleQuery(nextCompanyId);
+          setPageNumber(1);
+          handleQuery(nextCompanyId, searchName, 1, pageSize);
           return;
         }
 
@@ -380,7 +414,7 @@ const ComputerAsset = () => {
         enqueueSnackbar('刪除成功', { variant: 'success', style: { whiteSpace: 'pre-line' } });
         closeAssetDialog();
         setRowData(prevRows => prevRows.filter(row => Number(row.Id) !== Number(formData.Id)));
-        handleQuery(companyId);
+        handleQuery(companyId, searchName, pageNumber, pageSize);
       })
       .catch(() => {
         setOpen(false);
@@ -416,6 +450,22 @@ const ComputerAsset = () => {
           </Box>
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems={{ xs: 'stretch', sm: 'center' }}>
+            <FormControl sx={{ minWidth: 150 }}>
+              <TextField
+                size="small"
+                label="使用者"
+                value={searchName}
+                onChange={e => setSearchName(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    const val = e.target.value;
+                    setPageNumber(1);
+                    handleQuery(companyId, val, 1, pageSize);
+                  }
+                }}
+              />
+            </FormControl>
+
             <FormControl sx={{ minWidth: 220 }}>
               <TextField
                 select
@@ -433,12 +483,21 @@ const ComputerAsset = () => {
             </FormControl>
 
             <Button
-              onClick={() => handleQuery(companyId)}
+              onClick={() => { setPageNumber(1); handleQuery(companyId, searchName, 1, pageSize); }}
               variant="contained"
-              startIcon={<SearchIcon />}
+              startIcon={<RefreshIcon />}
               sx={{ height: 40, px: 2.5, fontWeight: 700, borderRadius: 1.5 }}
             >
               刷新
+            </Button>
+            <Button
+              onClick={duplicateRow}
+              variant="contained"
+              color="secondary"
+              startIcon={<ContentCopyIcon />}
+              sx={{ height: 40, px: 2.5, fontWeight: 700, borderRadius: 1.5 }}
+            >
+              複製
             </Button>
             <Button
               onClick={openCreateDialog}

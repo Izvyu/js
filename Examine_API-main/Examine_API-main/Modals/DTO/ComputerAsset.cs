@@ -33,5 +33,7 @@ namespace TodoApi2
         public DateTime? CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
         public bool IsDeleted { get; set; }
+
+        public string? Name { get; set; }
     }
 }

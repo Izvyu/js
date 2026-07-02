@@ -23,6 +23,22 @@ namespace TodoApi2
             return result;
         }
 
+        public ResultDTO GetListName(ComputerAsset c)
+        {
+            ResultDTO result = new ResultDTO();
+            ArrayList alParameters = new ArrayList();
+
+            alParameters.Add(new object[3] { "@CompanyId", SqlDbType.Int, c.CompanyId });
+            alParameters.Add(new object[3] { "@Name", SqlDbType.NVarChar, DbValue(c.Name) });
+            DataSet ds = xDS.ExecProcedureDataSet(SPName.sp_ComputerAssets_GetListName, alParameters);
+
+            result.dsResult = ds;
+            result.dtResult = ds.Tables[0];
+            result.TotalRecord = ds.Tables[0].Rows.Count;
+
+            return result;
+        }
+
         public ResultDTO Insert(ComputerAsset c)
         {
             ResultDTO result = new ResultDTO();
