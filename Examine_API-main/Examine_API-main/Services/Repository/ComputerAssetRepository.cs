@@ -39,6 +39,21 @@ namespace TodoApi2
             return result;
         }
 
+        public ResultDTO GetById(ComputerAsset c)
+        {
+            ResultDTO result = new ResultDTO();
+            ArrayList alParameters = new ArrayList();
+
+            alParameters.Add(new object[3] { "@Id", SqlDbType.Int, c.Id });
+            DataSet ds = xDS.ExecProcedureDataSet(SPName.sp_ComputerAssets_GetById, alParameters);
+
+            result.dsResult = ds;
+            result.dtResult = ds.Tables[0];
+            result.TotalRecord = ds.Tables[0].Rows.Count;
+
+            return result;
+        }
+
         public ResultDTO Insert(ComputerAsset c)
         {
             ResultDTO result = new ResultDTO();
@@ -78,6 +93,29 @@ namespace TodoApi2
             DataSet ds = xDS.ExecProcedureDataSet(SPName.sp_ComputerAssets_Delete, alParameters);
             ds = EnsureExecuteResult(ds, "Delete", c.Id);
 
+            result.dsResult = ds;
+            result.dtResult = ds.Tables[0];
+            result.TotalRecord = ds.Tables[0].Rows.Count;
+
+            return result;
+        }
+
+        public ResultDTO InsertLog(ComputerAsset c, string actionType, string actionBy, string actionHost, string actionIp, string oldData, string newData, string remark)
+        {
+            ResultDTO result = new ResultDTO();
+            ArrayList alParameters = new ArrayList();
+
+            alParameters.Add(new object[3] { "@AssetId", SqlDbType.Int, c.Id == 0 ? DBNull.Value : (object)c.Id });
+            alParameters.Add(new object[3] { "@CompanyId", SqlDbType.Int, c.CompanyId == 0 ? DBNull.Value : (object)c.CompanyId });
+            alParameters.Add(new object[3] { "@ActionType", SqlDbType.NVarChar, actionType });
+            alParameters.Add(new object[3] { "@ActionBy", SqlDbType.NVarChar, DbValue(actionBy) });
+            alParameters.Add(new object[3] { "@ActionHost", SqlDbType.NVarChar, DbValue(actionHost) });
+            alParameters.Add(new object[3] { "@ActionIp", SqlDbType.NVarChar, DbValue(actionIp) });
+            alParameters.Add(new object[3] { "@OldData", SqlDbType.NVarChar, DbValue(oldData) });
+            alParameters.Add(new object[3] { "@NewData", SqlDbType.NVarChar, DbValue(newData) });
+            alParameters.Add(new object[3] { "@Remark", SqlDbType.NVarChar, DbValue(remark) });
+
+            DataSet ds = xDS.ExecProcedureDataSet(SPName.sp_ComputerAssetLog_Insert, alParameters);
             result.dsResult = ds;
             result.dtResult = ds.Tables[0];
             result.TotalRecord = ds.Tables[0].Rows.Count;
