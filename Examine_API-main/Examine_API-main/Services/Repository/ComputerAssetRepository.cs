@@ -100,6 +100,27 @@ namespace TodoApi2
             return result;
         }
 
+        public ResultDTO BatchUpdateStatus(ComputerAssetBatchStatus c, string actionBy, string actionHost, string actionIp)
+        {
+            ResultDTO result = new ResultDTO();
+            ArrayList alParameters = new ArrayList();
+
+            alParameters.Add(new object[3] { "@Ids", SqlDbType.NVarChar, DbValue(c.Ids) });
+            alParameters.Add(new object[3] { "@FromStatus", SqlDbType.NVarChar, DbValue(c.FromStatus) });
+            alParameters.Add(new object[3] { "@ToStatus", SqlDbType.NVarChar, DbValue(c.ToStatus) });
+            alParameters.Add(new object[3] { "@ActionBy", SqlDbType.NVarChar, DbValue(actionBy) });
+            alParameters.Add(new object[3] { "@ActionHost", SqlDbType.NVarChar, DbValue(actionHost) });
+            alParameters.Add(new object[3] { "@ActionIp", SqlDbType.NVarChar, DbValue(actionIp) });
+
+            DataSet ds = xDS.ExecProcedureDataSet(SPName.sp_ComputerAssets_BatchUpdateStatus, alParameters);
+
+            result.dsResult = ds;
+            result.dtResult = ds.Tables[0];
+            result.TotalRecord = ds.Tables[0].Rows.Count;
+
+            return result;
+        }
+
         public ResultDTO InsertLog(ComputerAsset c, string actionType, string actionBy, string actionHost, string actionIp, string oldData, string newData, string remark)
         {
             ResultDTO result = new ResultDTO();

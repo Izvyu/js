@@ -131,6 +131,33 @@ namespace TodoApi2.Controllers
             return Content(JsonConvert.SerializeObject(qry, new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd" }));
         }
 
+        [HttpPost]
+        public ActionResult BatchUpdateStatus([FromForm] ReceiveDTO<ComputerAssetBatchStatus> c)
+        {
+            if (c.parameter == null || string.IsNullOrWhiteSpace(c.parameter.Ids) || string.IsNullOrWhiteSpace(c.parameter.ToStatus))
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("Result", typeof(string));
+                dt.Columns.Add("ErrMsg", typeof(string));
+
+                DataRow dr = dt.NewRow();
+                dr["Result"] = "-1";
+                dr["ErrMsg"] = "Ids and ToStatus are required.";
+                dt.Rows.Add(dr);
+
+                var errorQry = new { TotalRecord = dt.Rows.Count, rows = dt };
+                return Content(JsonConvert.SerializeObject(errorQry, new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd" }));
+            }
+
+            string clientIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            string clientHost = clientIp;
+            string actionBy = string.IsNullOrWhiteSpace(c.parameter.ActionBy) ? "unknown" : c.parameter.ActionBy;
+
+            ResultDTO result = Repository.BatchUpdateStatus(c.parameter, actionBy, clientHost, clientIp);
+            var qry = new { TotalRecord = result.TotalRecord, rows = result.dtResult };
+            return Content(JsonConvert.SerializeObject(qry, new IsoDateTimeConverter() { DateTimeFormat = "yyyy/MM/dd" }));
+        }
+
         private string GetInsertDataJson(ComputerAsset c)
         {
             Dictionary<string, object?> values = GetAssetValues(c);

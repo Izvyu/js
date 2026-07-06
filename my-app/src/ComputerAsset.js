@@ -21,6 +21,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import SearchIcon from '@mui/icons-material/Search';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-enterprise';
@@ -105,6 +106,9 @@ const ComputerAsset = () => {
   const [pageNumber, setPageNumber] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(100);
   const [totalRecord, setTotalRecord] = React.useState(0);
+  const [batchStatusOpen, setBatchStatusOpen] = React.useState(false);
+  const [batchStatusValue, setBatchStatusValue] = React.useState('');
+  const [batchSelectedRows, setBatchSelectedRows] = React.useState([]);
 
   const columnDefs = React.useMemo(() => [
     {
@@ -177,6 +181,25 @@ const ComputerAsset = () => {
     () => companyOptions.find(item => item.CompanyId === Number(companyId)) || companyOptions[0],
     [companyId]
   );
+
+  const batchFromStatus = React.useMemo(() => {
+    const statuses = [...new Set(batchSelectedRows.map(row => row.Status).filter(Boolean))];
+    return statuses.length === 1 ? statuses[0] : null;
+  }, [batchSelectedRows]);
+
+  const getStatusLabel = value => {
+    const status = statusOptions.find(item => item.value === value);
+    return status ? status.label : value;
+  };
+
+  const getActionBy = () => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem('UserInfo') || '{}');
+      return userInfo.PersonalId || 'unknown';
+    } catch {
+      return 'unknown';
+    }
+  };
 
   const handleQuery = React.useCallback((queryCompanyId = companyId, name = null, pageNumberParam = pageNumber, pageSizeParam = pageSize) => {
     setOpen(true);
@@ -384,6 +407,82 @@ const ComputerAsset = () => {
       });
   };
 
+  const openBatchStatusDialog = () => {
+    const selected = gridRef.current?.api?.getSelectedRows() || [];
+
+    if (selected.length === 0) {
+      enqueueSnackbar('請先勾選要批量修改狀態的資料', { variant: 'warning', style: { whiteSpace: 'pre-line' } });
+      return;
+    }
+
+    setBatchSelectedRows(selected);
+    setBatchStatusValue('');
+    setBatchStatusOpen(true);
+  };
+
+  const closeBatchStatusDialog = () => {
+    setBatchStatusOpen(false);
+    setBatchStatusValue('');
+    setBatchSelectedRows([]);
+  };
+
+  const batchUpdateStatus = () => {
+    const ids = batchSelectedRows
+      .map(row => Number(row.Id))
+      .filter(id => Number.isFinite(id) && id > 0);
+
+    if (ids.length === 0) {
+      enqueueSnackbar('找不到選取資料的 Id', { variant: 'error', style: { whiteSpace: 'pre-line' } });
+      return;
+    }
+
+    if (!batchStatusValue) {
+      enqueueSnackbar('請選擇要變更的狀態', { variant: 'warning', style: { whiteSpace: 'pre-line' } });
+      return;
+    }
+
+    if (batchFromStatus && batchFromStatus === batchStatusValue) {
+      enqueueSnackbar('目標狀態與目前狀態相同，不需要更新', { variant: 'warning', style: { whiteSpace: 'pre-line' } });
+      return;
+    }
+
+    setOpen(true);
+    PF.instance({
+      method: 'post',
+      url: PF.url2 + '/ComputerAsset/BatchUpdateStatus',
+      data: Qs.stringify({
+        Action: '1',
+        parameter: {
+          Ids: ids.join(','),
+          ...(batchFromStatus ? { FromStatus: batchFromStatus } : {}),
+          ToStatus: batchStatusValue,
+          ActionBy: getActionBy(),
+        },
+      }),
+      headers: { token: sessionStorage.token },
+    })
+      .then(response => {
+        setOpen(false);
+        const rows = response.data?.rows || [];
+        const resultRow = Array.isArray(rows) && rows.length > 0 ? rows[0] : {};
+        const resultCode = Number(resultRow.Result || 0);
+
+        if (resultCode < 0) {
+          enqueueSnackbar(resultRow.ErrMsg || '批量修改狀態失敗', { variant: 'error', style: { whiteSpace: 'pre-line' } });
+          return;
+        }
+
+        const updatedCount = Number(resultRow.UpdatedCount || 0);
+        enqueueSnackbar(`批量修改狀態成功，共更新 ${updatedCount} 筆`, { variant: 'success', style: { whiteSpace: 'pre-line' } });
+        closeBatchStatusDialog();
+        gridRef.current?.api?.deselectAll();
+        handleQuery(companyId, searchName, pageNumber, pageSize);
+      })
+      .catch(() => {
+        setOpen(false);
+        enqueueSnackbar('批量修改狀態時發生錯誤', { variant: 'error', style: { whiteSpace: 'pre-line' } });
+      });
+  };
   const deleteAsset = () => {
     if (!formData.Id) {
       enqueueSnackbar('找不到要刪除的資料 ID', { variant: 'error', style: { whiteSpace: 'pre-line' } });
@@ -500,6 +599,15 @@ const ComputerAsset = () => {
               複製
             </Button>
             <Button
+              onClick={openBatchStatusDialog}
+              variant="contained"
+              color="warning"
+              startIcon={<PublishedWithChangesIcon />}
+              sx={{ height: 40, px: 2.5, fontWeight: 700, borderRadius: 1.5 }}
+            >
+              批量改狀態
+            </Button>
+            <Button
               onClick={openCreateDialog}
               variant="contained"
               color="success"
@@ -595,6 +703,37 @@ const ComputerAsset = () => {
         </DialogActions>
       </Dialog>
 
+      <Dialog open={batchStatusOpen} onClose={closeBatchStatusDialog} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 700, color: '#174a7c' }}>批量修改狀態</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText sx={{ color: '#333', mb: 2 }}>
+            已選取 {batchSelectedRows.length} 筆資料
+            {batchFromStatus ? `，目前狀態：${getStatusLabel(batchFromStatus)}` : '，目前包含多種狀態'}
+          </DialogContentText>
+          <TextField
+            fullWidth
+            select
+            size="small"
+            label="目標狀態"
+            value={batchStatusValue}
+            onChange={event => setBatchStatusValue(event.target.value)}
+          >
+            {statusOptions.map(status => (
+              <MenuItem key={status.value} value={status.value}>
+                {status.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button onClick={closeBatchStatusDialog} variant="outlined">
+            取消
+          </Button>
+          <Button onClick={batchUpdateStatus} variant="contained" color="warning">
+            確認更新
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
         <DialogTitle sx={{ fontWeight: 700, color: '#d32f2f' }}>確認刪除</DialogTitle>
         <DialogContent>
