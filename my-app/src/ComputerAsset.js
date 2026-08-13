@@ -37,6 +37,10 @@ const companyOptions = [
   { CompanyId: 3, CompanyCode: 'SW', CompanyName: '台中守葳公司' },
   { CompanyId: 4, CompanyCode: 'SH', CompanyName: '台北守葳公司' },
   { CompanyId: 5, CompanyCode: 'SC', CompanyName: '竹北守葳公司' },
+  { CompanyId: 6, CompanyCode: 'SWKHART', CompanyName: '高雄守葳公司' },
+  { CompanyId: 7, CompanyCode: 'PUL', CompanyName: '璞真愛公司' },
+  { CompanyId: 8, CompanyCode: 'SWTY', CompanyName: '桃園守葳公司' },
+  { CompanyId: 9, CompanyCode: 'SWBD', CompanyName: '台中北屯守葳公司' },
 ];
 
 const statusOptions = [
