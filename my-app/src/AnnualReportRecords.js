@@ -113,11 +113,29 @@ const AnnualReportRecords = () => {
         const itemMap = {};
         rows.forEach(r => {
           const dateStr = formatDate(r.SpecialCheckDate);
-          if (!itemMap[r.ItemName]) itemMap[r.ItemName] = { ItemName: r.ItemName, Reference: r.Reference || '', ErrMap: {} };
-          itemMap[r.ItemName][dateStr] = r.Value;
-          itemMap[r.ItemName].ErrMap[dateStr] = r.Err;
+
+          if (!itemMap[r.ItemNo]) {
+            itemMap[r.ItemNo] = {
+              ItemNo: r.ItemNo,
+              ItemName: r.ItemName,
+              Reference: r.Reference || '',
+              ErrMap: {}
+            };
+          }
+
+          itemMap[r.ItemNo][dateStr] = r.Value;
+          itemMap[r.ItemNo].ErrMap[dateStr] = r.Err;
         });
-        setRowData(Object.values(itemMap));
+
+        setRowData(
+          Object.values(itemMap).sort((a, b) =>
+            String(a.ItemNo).localeCompare(
+              String(b.ItemNo),
+              undefined,
+              { numeric: true }
+            )
+          )
+        );  
       })
       .catch(() => {
         setOpen(false);
